@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 // import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
+import { MuiIcon } from "../icons";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -81,17 +82,12 @@ const AppHeader: React.FC = () => {
             {/* Cross Icon */}
           </button>
 
-          <Link to="/" className="lg:hidden">
-            <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
-              alt="Logo"
-            />
+          <Link
+            to="/"
+            className="lg:hidden flex justify-center items-center gap-2"
+          >
+            <MuiIcon className="w-8 h-8" />
+            <span className="font-semibold">LPPOM MUI</span>
           </Link>
 
           <button
