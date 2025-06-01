@@ -124,8 +124,7 @@ const CardAddSubmission = () => {
   const handleCompanySubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     companyData.user_id = String(userId);
-    console.log("Berhasil menyimpan company:", companyData);
-    setStepForm("productForm");
+    // console.log("Berhasil menyimpan company:", companyData);
   };
 
   return (

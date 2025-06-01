@@ -4,7 +4,7 @@ import { useStateContext } from "./ContextProvider";
 export const useAuth = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { currentUser, token } = useStateContext();
+  const { user, token } = useStateContext();
 
   const checkAuth = () => {
     const publicPages = ["/signin", "/signup", "/"];
@@ -30,5 +30,5 @@ export const useAuth = () => {
     navigate("/signin", { replace: true });
   };
 
-  return { checkAuth, login, logout, currentUser, token };
+  return { checkAuth, login, logout, user, token };
 };

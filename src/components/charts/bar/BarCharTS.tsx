@@ -8,7 +8,7 @@ interface BarChartTSProps {
 
 interface BarChartTSState {
   options: ApexOptions;
-  series: number[];
+  series: object[];
   // series: {
   //   data: number[];
   // }[];
@@ -55,9 +55,8 @@ class BarChartTS extends Component<BarChartTSProps, BarChartTSState> {
           offsetX: 0,
           style: {
             fontSize: "12px",
-            colors: ["#000"],
+            colors: ["#000000"],
           },
-          colors: ["#000"], // Warna bar
         },
         xaxis: {
           categories: [
@@ -76,7 +75,7 @@ class BarChartTS extends Component<BarChartTSProps, BarChartTSState> {
     return (
       <Chart
         options={this.state.options}
-        series={this.state.series}
+        // series={this.state.series}
         type="bar"
       />
     );

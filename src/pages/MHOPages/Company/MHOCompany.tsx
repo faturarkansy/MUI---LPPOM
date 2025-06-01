@@ -1,7 +1,7 @@
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import axiosClient from "../../../axios-client";
 import { useEffect, useState } from "react";
-import { DotsIcon } from "../../../icons";
+// import { DotsIcon } from "../../../icons";
 
 export default function MHOCompany() {
   const [companiesData, setCompaniesData] = useState<any[]>([]);

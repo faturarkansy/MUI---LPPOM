@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import axiosClient from "../../../axios-client";
 import { PlusIcon, ChevronDownIcon } from "../../../icons";
@@ -99,6 +99,13 @@ export default function MHOSubmission() {
     };
   }, [openMenuId]);
 
+  const setMenuRef = useCallback(
+    (el: HTMLDivElement | null, userId: number) => {
+      menuRefs.current[userId] = el;
+    },
+    []
+  );
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Submission" />
@@ -164,7 +171,8 @@ export default function MHOSubmission() {
                 {/* Dropdown Menu */}
                 {openMenuId === submission.id && (
                   <div
-                    ref={(el) => (menuRefs.current[submission.id] = el)}
+                    // ref={(el) => (menuRefs.current[submission.id] = el)}
+                    ref={(el) => setMenuRef(el, submission.id)}
                     // className="absolute right-0 top-10 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                     className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                   >

@@ -1,6 +1,6 @@
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import axiosClient from "../../../axios-client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { DotsIcon } from "../../../icons";
 
 const MHOActivities = () => {
@@ -101,6 +101,13 @@ const MHOActivities = () => {
     const user = usersData.find((user) => user.id === userId);
     return user ? user.name : "Unknown Agent";
   }
+
+  const setMenuRef = useCallback(
+    (el: HTMLDivElement | null, userId: number) => {
+      menuRefs.current[userId] = el;
+    },
+    []
+  );
 
   return (
     <div>
@@ -271,7 +278,8 @@ const MHOActivities = () => {
               {/* Dropdown Menu */}
               {openMenuId === submissionHistory.id && (
                 <div
-                  ref={(el) => (menuRefs.current[submissionHistory.id] = el)}
+                  // ref={(el) => (menuRefs.current[submissionHistory.id] = el)}
+                  ref={(el) => setMenuRef(el, submissionHistory.id)}
                   className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                 >
                   <ul className="py-1 text-sm text-gray-700">

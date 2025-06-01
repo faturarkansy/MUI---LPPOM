@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import axiosClient from "../../axios-client"; // Pastikan path ini benar
 import { DotsIcon } from "../../icons";
 import AgentAddModal from "../form/AgentAddModal";
@@ -163,6 +163,13 @@ function CardAgentApplicant() {
     };
   }, [openMenuId]);
 
+  const setMenuRef = useCallback(
+    (el: HTMLDivElement | null, userId: number) => {
+      menuRefs.current[userId] = el;
+    },
+    []
+  );
+
   if (loading) {
     return <div>Loading data...</div>;
   }
@@ -219,7 +226,8 @@ function CardAgentApplicant() {
                   {/* Dropdown Menu - tambahkan ini */}
                   {openMenuId === user.id && (
                     <div
-                      ref={(el) => (menuRefs.current[user.id] = el)}
+                      // ref={(el) => (menuRefs.current[user.id] = el)}
+                      ref={(el) => setMenuRef(el, user.id)}
                       // className="absolute right-0 top-10 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                       className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                     >
@@ -277,9 +285,10 @@ function CardAgentApplicant() {
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}
-        userId={selectedUserId}
+        // userId={selectedUserId}
         refreshTrigger={refreshTrigger}
         setRefreshTrigger={setRefreshTrigger}
+        url={`/users/${selectedUserId}`}
       />
 
       <AgentAddModal

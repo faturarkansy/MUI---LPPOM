@@ -1,6 +1,6 @@
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import axiosClient from "../../../axios-client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { DotsIcon, PlusIcon } from "../../../icons";
 // import { ref } from "process";
 import ActivityAddModal from "../../../components/modal/ActivityAddModal";
@@ -154,6 +154,13 @@ const MHOActivities = () => {
     return user ? user.name : "Unknown Agent";
   }
 
+  const setMenuRef = useCallback(
+    (el: HTMLDivElement | null, userId: number) => {
+      menuRefs.current[userId] = el;
+    },
+    []
+  );
+
   return (
     <div>
       <PageBreadcrumb pageTitle="Pelaku Usaha" />
@@ -285,9 +292,8 @@ const MHOActivities = () => {
                       {/* Dropdown Menu */}
                       {openMenuId === submissionHistory.id && (
                         <div
-                          ref={(el) =>
-                            (menuRefs.current[submissionHistory.id] = el)
-                          }
+                          // ref={(el) => (menuRefs.current[submissionHistory.id] = el)}
+                          ref={(el) => setMenuRef(el, submissionHistory.id)}
                           // className="absolute right-0 top-10 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                           className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
                         >
