@@ -6,6 +6,7 @@ import AgentAddModal from "../../../components/form/AgentAddModal";
 import AgentDetailModal from "../../../components/modal/AgentDetailModal";
 import AgentEditModal from "../../../components/modal/AgentEditModal";
 import ConfirmDeleteModal from "../../../components/modal/ConfirmDeleteModal";
+import ConfirmChangeStatusModal from "../../../components/modal/ConfirmChangeStatusModal";
 
 // --- Interface Definitions (sudah benar) ---
 interface Role {
@@ -23,14 +24,15 @@ interface User {
   id: number;
   name: string;
   email: string;
-  email_verified_at: string | null;
-  password_change_at: string | null;
-  test_passed_at: string | null;
-  tnc_accept_at: string | null;
+  email_verified_at: string;
+  password_change_at: string;
+  test_passed_at: string;
+  tnc_accept_at: string;
+  status: number;
   attr: any;
-  parent: User | null;
-  region: any | null;
-  sub_region: any | null;
+  parent: User;
+  region: any;
+  sub_region: any;
   meta: any[];
   roles: Role[];
 }
@@ -51,6 +53,7 @@ interface UserData {
   gender: string;
   phone: string;
   type: string;
+  status: number;
 }
 
 // Komponen React
@@ -63,6 +66,7 @@ function MHOAgent() {
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isActiveModalOpen, setIsActiveModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -98,6 +102,12 @@ function MHOAgent() {
     setOpenMenuId(null);
   };
 
+  const handleOpenActiveModal = (userId: number) => {
+    setSelectedUserId(userId);
+    setIsActiveModalOpen(true);
+    setOpenMenuId(null);
+  };
+
   const handleOpenDeleteModal = (userId: number) => {
     setSelectedUserId(userId);
     setIsDeleteModalOpen(true);
@@ -115,6 +125,11 @@ function MHOAgent() {
 
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
+    setSelectedUserId(null);
+  };
+
+  const handleCloseActiveModal = () => {
+    setIsActiveModalOpen(false);
     setSelectedUserId(null);
   };
 
@@ -146,6 +161,7 @@ function MHOAgent() {
         gender: user.attr.gender,
         phone: user.attr.phone,
         type: user.attr.type,
+        status: user.status,
       };
     });
     return usersDataStructureChanged;
@@ -183,6 +199,7 @@ function MHOAgent() {
   useEffect(() => {
     const restructuredUser = changeAgentUserDataStructure(agentUsers);
     // Jika searchQuery kosong, tampilkan semua data agent
+    console.log("Restructured user data:", restructuredUser);
     if (!searchQuery.trim()) {
       setFilteredAgents(restructuredUser);
       return;
@@ -299,13 +316,13 @@ function MHOAgent() {
               </div>
               <div className="mt-3 flex justify-between items-center">
                 {/* Status */}
-                {user.test_passed_at ? (
+                {user.status && user.status === 1 ? (
                   <div className="p-1 flex items-center border text-[#7EC34B] bg-[#F0F9E8] rounded-lg">
                     <span>{"Active"}</span>
                   </div>
                 ) : (
                   <div className="p-1 flex items-center border text-[#c34b4b] bg-[#f9e8e8] rounded-lg">
-                    <span>{"Non Active"}</span>
+                    <span>Non Active</span>
                   </div>
                 )}
                 <div className="flex text-white relative">
@@ -346,6 +363,16 @@ function MHOAgent() {
                         </li>
                         <li>
                           <button
+                            onClick={handleOpenActiveModal.bind(null, user.id)}
+                            className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            {user.status && user.status === 1
+                              ? "Nonaktifkan Akun"
+                              : "Aktifkan Akun"}
+                          </button>
+                        </li>
+                        <li>
+                          <button
                             onClick={handleOpenDeleteModal.bind(null, user.id)}
                             className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                           >
@@ -377,6 +404,13 @@ function MHOAgent() {
         userId={selectedUserId}
         refreshTrigger={refreshTrigger}
         setRefreshTrigger={setRefreshTrigger}
+      />
+      <ConfirmChangeStatusModal
+        isOpen={isActiveModalOpen}
+        onClose={handleCloseActiveModal}
+        refreshTrigger={refreshTrigger}
+        setRefreshTrigger={setRefreshTrigger}
+        userId={selectedUserId}
       />
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
