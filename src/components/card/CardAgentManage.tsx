@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../axios-client"; // Pastikan path ini benar
-import { EyeIcon, PlusIcon } from "../../icons";
+import { EyeIcon } from "../../icons";
 
 // --- Interface Definitions (sudah benar) ---
 interface Role {
