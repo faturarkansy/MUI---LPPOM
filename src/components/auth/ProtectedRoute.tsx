@@ -24,7 +24,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         redirectPath = "/admin/dashboard";
         break;
       case "agent":
-        redirectPath = "/agent/agreement";
+        redirectPath = "/agent/agent-agreement";
         break;
       case "MHO (Mitra Halal Official)":
         redirectPath = "/mho/dashboard";

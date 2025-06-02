@@ -7,7 +7,7 @@ export default function AuthPageLayout() {
   if (token && user?.role === "admin") {
     return <Navigate to="/admin/dashboard" />;
   } else if (token && user?.role === "agent") {
-    return <Navigate to="/agent/dashboard" />;
+    return <Navigate to="/agent/agent-agreement" />;
   } else if (token && user?.role === "MHO (Mitra Halal Official)") {
     return <Navigate to="/mho/dashboard" />;
   } else if (token && user?.role === "Team Leader") {

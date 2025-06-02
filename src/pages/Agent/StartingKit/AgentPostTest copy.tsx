@@ -18,10 +18,8 @@ const AgentPostTest = () => {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const questionsPerPage = 4;
 
-  // Ambil data soal
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,6 +28,7 @@ const AgentPostTest = () => {
 
         console.log("API Raw Data:", rawData);
 
+        // Sama seperti di file 1: mapping data biar match ke QuestionType
         const formattedData = rawData.map((item: any) => ({
           id: item.id,
           ask_image: item.ask_image || "",
@@ -44,67 +43,14 @@ const AgentPostTest = () => {
 
         setQuestions(formattedData);
       } catch (error) {
-        console.error("Gagal mengambil data soal:", error);
+        console.error("Error fetching quiz data:", error);
       }
     };
 
     fetchData();
   }, []);
 
-  // Handle pilih jawaban
-  const handleAnswerChange = (questionId: number, answer: string) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: answer,
-    }));
-  };
-
-  // Handle submit
-  const handleSubmit = async () => {
-    const now = new Date();
-    const formattedStart = now.toISOString().slice(0, 19).replace("T", " ");
-
-    const user = JSON.parse(localStorage.getItem("USER") || "{}");
-    const { id } = user;
-
-    // Hitung jumlah jawaban benar
-    let correctCount = 0;
-    const work = questions.map((q) => {
-      const userAnswer = answers[q.id] || "";
-      const isCorrect = userAnswer === q.key;
-      if (isCorrect) correctCount++;
-
-      return {
-        quiz_id: q.id,
-        answer: userAnswer,
-        status: isCorrect ? 1 : 0,
-      };
-    });
-
-    const passed = correctCount === questions.length;
-
-    const payload = {
-      id,                // sama dengan user.id
-      user_id: id,       // sama dengan id
-      point: correctCount,
-      status: passed ? 1 : 0,
-      start: formattedStart,
-      end: null,
-      work,
-    };
-
-    try {
-      await axiosClient.post("/ext/exams/create", payload);
-
-      // Jika berhasil, arahkan ke halaman hasil
-      navigate("/agent/result", { state: { status: passed ? "passed" : "failed" } });
-    } catch (error) {
-      console.error("Gagal submit ujian:", error);
-    }
-  };
-
-
-  // Pagination
+  // Pagination logic
   const indexOfLast = currentPage * questionsPerPage;
   const indexOfFirst = indexOfLast - questionsPerPage;
   const currentQuestions = questions.slice(indexOfFirst, indexOfLast);
@@ -118,11 +64,10 @@ const AgentPostTest = () => {
         <h1 className="font-normal text-3xl">Post Test</h1>
       </div>
 
-      {/* Soal */}
       {currentQuestions.map((q, index) => (
         <div
           key={q.id}
-          className="w-full max-w-full bg-white border border-gray-200 rounded-xl shadow-sm my-4 p-4"
+          className="w-full max-w-full sm:mx-0 bg-white border border-gray-200 rounded-xl shadow-sm my-4 p-4"
         >
           <h3 className="font-semibold mb-2 text-left">
             {indexOfFirst + index + 1}. {q.ask_text}
@@ -138,13 +83,11 @@ const AgentPostTest = () => {
 
           <div className="grid grid-cols-2 gap-4">
             {["a", "b", "c", "d", "e"].map((key) => (
-              <label key={key} className="flex items-center space-x-2 cursor-pointer">
+              <label key={key} className="flex items-center space-x-2">
                 <input
                   type="radio"
                   name={`question-${q.id}`}
                   value={q[key as keyof QuestionType]}
-                  checked={answers[q.id] === key}
-                  onChange={() => handleAnswerChange(q.id, key)}
                   className="form-radio text-blue-500"
                 />
                 <span>{q[key as keyof QuestionType]}</span>
@@ -170,11 +113,10 @@ const AgentPostTest = () => {
         ))}
       </div>
 
-      {/* Submit */}
       <div className="mt-6 text-right">
         <button
-          onClick={handleSubmit}
-          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+          onClick={() => navigate("/agent/dashboard")}
+          className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800"
         >
           Submit
         </button>

@@ -7,7 +7,6 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AuthLayouts from "./pages/AuthPages/AuthPageLayout";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
-import ChangePassword from "./pages/AuthPages/ChangePassword";
 
 import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard";
 import AdminUser from "./pages/Admin/UserManagement/AdminUser";
@@ -28,6 +27,7 @@ import SupervisorSubmission from "./pages/Supervisor/PelakuUsaha/SupervisorSubmi
 // import SupervisorCalculator from "./pages/Supervisor/Calculator/SupervisorCalculator";
 
 import AgentDashboard from "./pages/Agent/Dashboard/AgentDashboard";
+import AgentChangePassword from "./pages/AuthPages/ChangePassword";
 import AgentAddSubmission from "./pages/Agent/PelakuUsaha/AgentAddSubmission";
 import AgentSubmission from "./pages/Agent/PelakuUsaha/AgentSubmission";
 import AgentPelakuUsaha from "./pages/Agent/PelakuUsaha/AgentPelakuUsaha";
@@ -36,7 +36,9 @@ import AgentFAQ from "./pages/Agent/Marketing/AgentFAQ";
 // import AgentInsentif from "./pages/Agent/Insentif/AgentInsentif";
 // import AgentCalculator from "./pages/Agent/Calculator/AgentCalculator";
 import AgentAgreement from "./pages/Agent/StartingKit/AgentAgreement";
+import AgentActivities from "./pages/Agent/Activities/AgentActivities";
 import AgentStartPostTest from "./pages/Agent/StartingKit/AgentStartPostTest";
+import AgentResultPostTest from "./pages/Agent/StartingKit/AgentResultPostTest";
 import AgentPostTest from "./pages/Agent/StartingKit/AgentPostTest";
 import AgentLearningModule from "./pages/Agent/StartingKit/AgentLearningModule";
 import AgentAccessBlocked from "./pages/Agent/StartingKit/AgentAccessBlocked";
@@ -57,10 +59,6 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignUp />,
-      },
-      {
-        path: "change-password",
-        element: <ChangePassword />,
       },
     ],
   },
@@ -169,7 +167,30 @@ const router = createBrowserRouter([
       },
     ],
   },
-
+  {
+    path: "/agent/agent-agreement",
+    element: (
+      <ProtectedRoute allowedRoles={["agent"]}>
+        <AgentAgreement />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/agent/change-password",
+    element: (
+      <ProtectedRoute allowedRoles={["agent"]}>
+        <AgentChangePassword />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/agent/agent-agreement",
+    element: (
+      <ProtectedRoute allowedRoles={["agent"]}>
+        <AgentAgreement />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: "/agent",
     element: (
@@ -180,7 +201,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Navigate to="/dashboard" />,
+        element: <AgentDashboard />,
       },
       {
         path: "dashboard",
@@ -225,6 +246,14 @@ const router = createBrowserRouter([
       {
         path: "agent-agreement",
         element: <AgentAgreement />,
+      },
+      {
+        path: "result-post-test",
+        element: <AgentResultPostTest />,
+      },
+      {
+        path: "activities",
+        element: <AgentActivities />,
       },
     ],
   },

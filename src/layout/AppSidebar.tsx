@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
+import axios from "axios";
 import {
+  UserIcon,
   BoxIcon,
   ChevronRightIcon,
   HorizontaLDots,
@@ -105,18 +107,25 @@ const roleNavigations: Record<string, NavItem[]> = {
     },
   ],
   agent: [
+    // {
+    //   icon: <UserCircleIcon />,
+    //   name: "Dashboard",
+    //   path: "/agent/dashboard",
+    // },
     {
-      icon: <UserCircleIcon />,
-      name: "Dashboard",
-      path: "/agent/dashboard",
+      icon: <UserIcon />,
+      name: "Pelaku Usaha",
+      path: "/agent/pelaku-usaha",
     },
     {
-      icon: <BoxIcon />,
-      name: "Pelaku Usaha",
-      subItems: [
-        { name: "Pelaku Usaha", path: "/agent/pelaku-usaha" },
-        { name: "Submissions", path: "/agent/submission", },
-      ],
+      icon: <ListIcon />,
+      name: "Submissions",
+      path: "/agent/submission",
+    },
+    {
+      icon: <BuildingIcon />,
+      name: "Activities",
+      path: "/agent/activities",
     },
     {
       icon: <BoxIcon />,
@@ -165,15 +174,58 @@ const AppSidebar: React.FC<SidebarProps> = () => {
     {}
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [agentMenus, setAgentMenus] = useState<NavItem[] | null>(null);
 
   const isActive = useCallback(
     (path: string) => location.pathname === path,
     [location.pathname]
   );
 
+  // 🟢 Fetch user detail saat mount
+  useEffect(() => {
+    const fetchUserDetail = async () => {
+      try {
+        const response = await axios.get("/users", {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("TOKEN") || "")}`,
+          },
+        });
+
+        const userData = response.data;
+        // console.log("Fetched user:", userData);
+
+        if (
+          userData.roles.some((role: any) => role.name === "agent") &&
+          userData.tnc_accept_at &&
+          userData.test_passed_at
+        ) {
+          // Format tnc_accept_at & test_passed_at valid
+          if (
+            /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(userData.tnc_accept_at) &&
+            /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(userData.test_passed_at)
+          ) {
+            setAgentMenus(roleNavigations["agent"]);
+          } else {
+            setAgentMenus(null);
+          }
+        } else {
+          setAgentMenus(null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user detail:", error);
+        setAgentMenus(null);
+      }
+    };
+
+    fetchUserDetail();
+  }, []);
+
   useEffect(() => {
     let submenuMatched = false;
-    const currentNavigation = roleNavigations[userRole] || [];
+    const currentNavigation =
+      userRole === "agent" && !agentMenus
+        ? []
+        : agentMenus ?? roleNavigations[userRole] ?? [];
 
     console.log("location: ", location);
 
@@ -366,6 +418,11 @@ const AppSidebar: React.FC<SidebarProps> = () => {
                   <HorizontaLDots className="size-6" />
                 )}
               </h2>
+              {/* {renderMenuItems(
+                userRole === "agent"
+                  ? agentMenus || []
+                  : roleNavigations[userRole] || []
+              )} */}
               {renderMenuItems(roleNavigations[userRole] || [])}
             </div>
           </div>

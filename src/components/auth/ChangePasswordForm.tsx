@@ -3,8 +3,10 @@ import { isMobile } from "react-device-detect";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axiosClient from "../../axios-client.js";
 import Notification from "../common/Notification.js";
+import { useNavigate } from "react-router-dom";
 
 export default function ChangePasswordForm() {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [showOldPassword, setShowOldPassword] = useState(false);
@@ -40,6 +42,32 @@ export default function ChangePasswordForm() {
             } else {
                 setNotification({ message: "Terjadi kesalahan.", type: "error" });
             }
+        }
+    };
+
+    const handleSkip = async () => {
+        try {
+            const userData = JSON.parse(localStorage.getItem("USER") || "{}");
+
+            if (!userData.id || !userData.role) {
+                setNotification({ message: "Data pengguna tidak ditemukan!", type: "error" });
+                return;
+            }
+
+            const response = await axiosClient.get(`/users/${userData.id}`);
+            const userDetail = response.data;
+
+            const hasTestPassed = !!userDetail.test_passed_at;
+            const hasAcceptedTnc = !!userDetail.tnc_accept_at;
+
+            if (hasTestPassed && hasAcceptedTnc) {
+                navigate("/agent/dashboard");
+            } else {
+                navigate("/agent/agent-access-blocked");
+            }
+        } catch (error) {
+            setNotification({ message: "Gagal memeriksa status user.", type: "error" });
+            console.error("Error checking user status:", error);
         }
     };
 
@@ -119,6 +147,7 @@ export default function ChangePasswordForm() {
                     <button
                         type="button"
                         className="w-full bg-black text-white py-2 font-semibold rounded-lg"
+                        onClick={handleSkip}
                     >
                         Skip
                     </button>

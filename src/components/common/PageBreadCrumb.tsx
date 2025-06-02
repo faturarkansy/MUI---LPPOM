@@ -1,48 +1,77 @@
-import { Link } from "react-router";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 
 interface BreadcrumbProps {
   pageTitle: string;
 }
 
 const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
+  const location = useLocation();
+
+  // Parse and format breadcrumb items from URL
+  const breadcrumbItems = React.useMemo(() => {
+    const cleanPath = location.pathname.split("?")[0].split("#")[0];
+    const pathSegments = cleanPath.split("/").filter((segment) => segment);
+
+    // Generate breadcrumb items from segments
+    return pathSegments.map((segment, index) => {
+      const path = "/" + pathSegments.slice(0, index + 1).join("/");
+      const displayName = segment
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+      // For the first segment, replace with "Dashboard" if it's not already custom named
+      const finalDisplayName = index === 0 ? "Dashboard" : displayName;
+
+      return {
+        path,
+        displayName: finalDisplayName,
+        isLast: index === pathSegments.length - 1,
+      };
+    });
+  }, [location.pathname]);
+
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <h2
-        className="text-xl font-semibold text-gray-800 dark:text-white/90"
-        x-text="pageName"
-      >
-        {pageTitle}
-      </h2>
-      <nav>
-        <ol className="flex items-center gap-1.5">
-          <li>
-            <Link
-              // className="inline-flex items-center gap-1.5 text-sm text-gray-500"
-              className="inline-flex items-center gap-1.5 text-sm text-white"
-              to="/"
-            >
-              Home
-              <svg
-                className="stroke-current"
-                width="17"
-                height="16"
-                viewBox="0 0 17 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366"
-                  stroke=""
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </Link>
-          </li>
-          <li className="text-sm text-gray-800">{pageTitle}</li>
+    <div className="flex flex-wrap items-center justify-between gap-1">
+      {/* Header */}
+      <div className="w-full h-20 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-end justify-start px-6 py-3 mb-3 rounded-3xl text-white">
+        <h1 className="font-normal text-3xl">{pageTitle}</h1>
+      </div>
+      {/* Breadcrumb in gradient bar */}
+      <div className="w-full h-8 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-center justify-start px-6 py-3 rounded-3xl text-white">
+        <ol className="flex items-center font-medium whitespace-nowrap">
+          {breadcrumbItems.map((item, index) => (
+            <li key={index} className="inline-flex items-center text-sm">
+              {index > 0 && (
+                <span className="mx-2 flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="feather feather-chevron-right"
+                  >
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </span>
+              )}
+              {!item.isLast ? (
+                <Link to={item.path} className="hover:underline">
+                  {item.displayName}
+                </Link>
+              ) : (
+                <span>{item.displayName}</span>
+              )}
+            </li>
+          ))}
         </ol>
-      </nav>
+      </div>
     </div>
   );
 };

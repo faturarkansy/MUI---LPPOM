@@ -18,6 +18,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import ChangePassword from "./pages/AuthPages/ChangePassword";
 
 export default function App() {
   return (
@@ -56,6 +57,7 @@ export default function App() {
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/change-password" element={<ChangePassword />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
