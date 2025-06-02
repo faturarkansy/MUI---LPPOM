@@ -172,14 +172,20 @@ const AppSidebar: React.FC<SidebarProps> = () => {
     {}
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
+  // const [agentMenus, setAgentMenus] = useState<NavItem[] | null>(null);
 
   const isActive = useCallback(
     (path: string) => location.pathname === path,
     [location.pathname]
   );
 
-
+  // const fallbackAgentMenu = [
+  //   {
+  //     icon: <BuildingIcon />,
+  //     name: "E-Learning",
+  //     path: "/agent/e-learning",
+  //   },
+  // ];
 
   useEffect(() => {
     let submenuMatched = false;
@@ -399,6 +405,11 @@ const AppSidebar: React.FC<SidebarProps> = () => {
                   <HorizontaLDots className="size-6" />
                 )}
               </h2>
+              {/* {renderMenuItems(
+                userRole === "agent"
+                  ? agentMenus ?? fallbackAgentMenu
+                  : roleNavigations[userRole] || []
+              )} */}
               {renderMenuItems(roleNavigations[userRole] || [])}
             </div>
           </div>

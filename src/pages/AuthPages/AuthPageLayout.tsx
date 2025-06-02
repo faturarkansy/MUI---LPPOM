@@ -12,11 +12,12 @@ export default function AuthPageLayout() {
   //   return <Navigate to="/tl/dashboard" />;
   // } else if (token && user?.role === "mho") {
   //   return <Navigate to="/mho/dashboard" />;
-  // } else if (token && user?.role === "agent") {
-  //   return <Navigate to="/agent/dashboard" />;
-  // }
+  // } else 
+  if (token && user?.role === "agent") {
+    return <Navigate to="/agent/agent-agreement" />;
+  }
 
-  if (token && user?.role === "mho") {
+  else if (token && user?.role === "mho") {
     return <Navigate to="/mho/agent" />;
   }
 

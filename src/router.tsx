@@ -29,12 +29,15 @@ import MHOActivities from "./pages/MHOPages/Activities/MHOActivities";
 import MHOLearningModule from "./pages/MHOPages/LMS/MHOLearningModule";
 
 // import AgentDashboard from "./pages/AgentPages/Dashboard/AgentDashboard";
-// import AgentCompany from "./pages/AgentPages/Company/AgentCompany";
-// import AgentSubmission from "./pages/AgentPages/Company/AgentSubmission";
-// import AgentMedia from "./pages/AgentPages/Marketing/AgentMedia";
-// import AgentFAQ from "./pages/AgentPages/Marketing/AgentFAQ";
-// import AgentPostTest from "./pages/AgentPages/LMS/AgentPostTest";
-// import AgentLearningModule from "./pages/AgentPages/LMS/AgentLearningModule";
+import AgentAgreement from "./pages/AgentPages/StartingKit/AgentAgreement";
+import AgentChangePassword from "./pages/AuthPages/ChangePassword";
+import AgentCompany from "./pages/AgentPages/Submission/AgentCompany";
+import AgentSubmission from "./pages/AgentPages/Submission/AgentSubmission";
+import AgentActivities from "./pages/AgentPages/Activities/AgentActivities";
+import AgentMedia from "./pages/AgentPages/Marketing/AgentMedia";
+import AgentFAQ from "./pages/AgentPages/Marketing/AgentFAQ";
+import AgentPostTest from "./pages/AgentPages/LMS/AgentPostTest";
+import AgentLearningModule from "./pages/AgentPages/LMS/AgentLearningModule";
 
 const router = createBrowserRouter([
   {
@@ -181,48 +184,70 @@ const router = createBrowserRouter([
     ],
   },
 
-  // {
-  //   path: "/agent",
-  //   element: (
-  //     <ProtectedRoute allowedRoles={["agent"]}>
-  //       <AppLay />
-  //     </ProtectedRoute>
-  //   ),
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: <Navigate to="/dashboard" />,
-  //     },
-  //     {
-  //       path: "dashboard",
-  //       element: <AgentDashboard />,
-  //     },
-  //     {
-  //       path: "company",
-  //       element: <AgentCompany />,
-  //     },
-  //     {
-  //       path: "submission",
-  //       element: <AgentSubmission />,
-  //     },
-  //     {
-  //       path: "media",
-  //       element: <AgentMedia />,
-  //     },
-  //     {
-  //       path: "faq",
-  //       element: <AgentFAQ />,
-  //     },
-  //     {
-  //       path: "post-test",
-  //       element: <AgentPostTest />,
-  //     },
-  //     {
-  //       path: "learning-module",
-  //       element: <AgentLearningModule />,
-  //     },
-  //   ],
-  // },
+  {
+    path: "/agent/agent-agreement",
+    element: (
+      <ProtectedRoute allowedRoles={["agent"]}>
+        <AgentAgreement />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/agent/change-password",
+    element: (
+      <ProtectedRoute allowedRoles={["agent"]}>
+        <AgentChangePassword />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/agent",
+    element: (
+      <ProtectedRoute allowedRoles={["agent"]}>
+        <AppLay />
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Navigate to="/submission" />,
+      },
+      {
+        path: "agent-agreement",
+        element: <AgentAgreement />,
+      },
+      {
+        path: "submission",
+        element: <AgentSubmission />,
+      },
+      {
+        path: "company",
+        element: <AgentCompany />,
+      },
+      {
+        path: "activities",
+        element: <AgentActivities />,
+      },
+      {
+        path: "media",
+        element: <AgentMedia />,
+      },
+      {
+        path: "faq",
+        element: <AgentFAQ />,
+      },
+      {
+        path: "post-test",
+        element: <AgentPostTest />,
+      },
+      {
+        path: "e-learning",
+        element: <AgentLearningModule />,
+      },
+    ],
+  },
 
   {
     path: "*",
