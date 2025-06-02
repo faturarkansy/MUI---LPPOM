@@ -154,7 +154,9 @@ export default function MHOSubmission() {
               <div className="p-3 flex items-center">
                 <div className="w-4 h-4 rounded-full bg-gray-400"></div>
                 <div className="ml-3">
-                  <p className="font-bold">{submission.company.name}</p>
+                  <p className="font-bold">
+                    {submission.company?.name ? submission.company.name : "-"}
+                  </p>
                   <p className="text-xs text-gray-600">{submission.date}</p>
                 </div>
               </div>
