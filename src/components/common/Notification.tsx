@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+import { CheckCircle, XCircle } from "lucide-react";
 
 interface NotificationProps {
+    title?: string;
     message: string;
     type?: "success" | "error";
     duration?: number;
@@ -8,9 +10,10 @@ interface NotificationProps {
 }
 
 const Notification: React.FC<NotificationProps> = ({
+    title,
     message,
     type = "success",
-    duration = 1500,
+    duration = 3000,
     onClose,
 }) => {
     useEffect(() => {
@@ -26,13 +29,27 @@ const Notification: React.FC<NotificationProps> = ({
     if (!message) return null;
 
     const baseStyle =
-        "fixed top-1/2 left-1/2 transform -translate-x-1/2 z-[999999] w-fit max-w-md flex justify-center px-4 py-2 rounded-lg shadow-md";
-    const successStyle = "border border-green-400 bg-green-100 text-green-600 font-semibold";
-    const errorStyle = "border border-red-400 bg-red-100 text-red-600 font-semibold";
+        "fixed top-3 right-4 z-[999999] w-fit max-w-sm flex items-start gap-3 px-4 py-3 rounded-lg shadow-md";
+
+    const successStyle =
+        "border border-green-200 bg-white text-green-800";
+    const errorStyle =
+        "border border-red-200 bg-white text-red-800";
+
+    const Icon = type === "success" ? CheckCircle : XCircle;
+    const iconColor = type === "success" ? "text-green-500" : "text-red-500";
 
     return (
         <div className={`${baseStyle} ${type === "success" ? successStyle : errorStyle}`}>
-            <p className="text-center whitespace-pre-line">{message}</p>
+            <Icon className={`w-5 h-5 mt-1 ${iconColor}`} />
+            <div>
+                <p className="font-semibold text-black">
+                    {title || (type === "success" ? "Successfully" : "Failed")}
+                </p>
+                <p className="text-sm text-gray-400">
+                    {message}
+                </p>
+            </div>
         </div>
     );
 };

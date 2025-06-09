@@ -4,6 +4,7 @@ import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
 import { useStateContext } from "../context/ContextProvider";
+import BelowNavbar from "./BelowNavbar";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -25,7 +26,7 @@ const LayoutContent: React.FC = () => {
           } ${isMobileOpen ? "ml-0" : ""}`}
       >
         <AppHeader />
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 mb-20 md:mb-0">
           <Outlet />
         </div>
       </div>
@@ -37,6 +38,7 @@ const AppLayout: React.FC = () => {
   return (
     <SidebarProvider>
       <LayoutContent />
+      <BelowNavbar />
     </SidebarProvider>
   );
 };

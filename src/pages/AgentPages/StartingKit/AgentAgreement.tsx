@@ -4,7 +4,6 @@ import Notification from "../../../components/common/Notification";
 import { useNavigate } from "react-router-dom";
 
 interface ApiData {
-    title: string;
     content: string;
 }
 
@@ -16,7 +15,7 @@ interface UserData {
 const AgentAgreement: React.FC = () => {
     const navigate = useNavigate();
     const [isChecked, setIsChecked] = useState<boolean>(false);
-    const [apiData, setApiData] = useState<ApiData>({ title: "", content: "" });
+    const [apiData, setApiData] = useState<ApiData>({ content: "" });
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [notif, setNotif] = useState<{ message: string; type: "success" | "error" }>({
         message: "",
@@ -27,8 +26,8 @@ const AgentAgreement: React.FC = () => {
         const fetchData = async () => {
             try {
                 const response = await axiosClient.get("/agreements");
-                const data = response.data.data;
-                setApiData({ title: data.title, content: data.content });
+                const data = response.data;
+                setApiData({ content: data.content });
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setNotif({ message: "Gagal mengambil data. Silakan coba lagi.", type: "error" });
@@ -49,22 +48,26 @@ const AgentAgreement: React.FC = () => {
         setIsLoading(true);
 
         try {
+            // Format waktu menjadi "YYYY-MM-DD HH:mm:ss"
             const now = new Date();
-            const isoString = now.toISOString();
-            const tncAcceptAt = isoString.replace(/(\.\d{3})Z$/, "$1000Z");
+            const formattedDate = now.toISOString().slice(0, 19).replace("T", " "); // "2025-06-08 14:27:29"
 
-            const payload = {
-                id: userData.id,
-                accept: true,
-                tnc_accept_at: tncAcceptAt,
+            // Simpan tnc_accept_at ke localStorage USER
+            const updatedUserData = {
+                ...userData,
+                tnc_accept_at: formattedDate,
             };
+            localStorage.setItem("USER", JSON.stringify(updatedUserData));
 
-            const response = await axiosClient.post("/agreements", payload);
+            // Kirim data ke server
+            const response = await axiosClient.post("/agreements", {
+                accept: 1,
+            });
 
-            if (response.data.status === "success") {
+            if (response.status === 200) {
                 setNotif({ message: "Anda Telah Menyetujui\nTerms & Conditions", type: "success" });
                 setTimeout(() => {
-                    navigate("/agent/change-password");
+                    navigate("/change-password");
                 }, 1000);
             } else {
                 setNotif({ message: "Gagal menyetujui. Silakan coba lagi.", type: "error" });
@@ -77,11 +80,12 @@ const AgentAgreement: React.FC = () => {
         }
     };
 
+
     return (
-        <div className="min-h-screen flex items-start mt-8 px-6 sm:items-center sm:mt-0 sm:px-0 justify-center">
+        <div className="min-h-screen flex items-center sm:items-start mt-0 sm:mt-8 px-6 sm:px-0 justify-center">
             <div className="w-full max-w-md text-left">
-                {/* Title */}
-                <h1 className="text-3xl font-bold text-left w-full max-w-md">{apiData.title || "Loading..."}</h1>
+                {/* Title (Hardcoded) */}
+                <h1 className="text-3xl font-bold text-left w-full max-w-md">Terms & Conditions</h1>
 
                 {/* Scrollable Content Box */}
                 <div className="w-full border border-black my-6 bg-gray-100 rounded-lg p-1 overflow-hidden">

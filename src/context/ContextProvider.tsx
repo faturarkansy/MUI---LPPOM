@@ -3,16 +3,18 @@ import {
   useContext,
   useState,
   ReactNode,
-  // useEffect,
 } from "react";
 
 // Interfaces
 interface User {
   id: string;
   role: string;
-  name: string; // Properti name ditambahkan
-  email: string; // Properti email ditambahkan
-  // Tambahkan properti user lainnya jika ada
+  name: string;
+  email: string;
+  password_change_at?: string;
+  status?: string;
+  tnc_accept_at?: string;
+  test_passed_at?: string;
 }
 
 interface StateContextType {
@@ -30,37 +32,36 @@ const STORAGE_KEYS = {
   TOKEN: "ACCESS_TOKEN",
 } as const;
 
-// Context creation dengan initial value
+// Context creation
 const StateContext = createContext<StateContextType>({
   user: null,
   token: null,
   notification: null,
-  setUser: () => {},
-  setToken: () => {},
-  setNotification: () => {},
+  setUser: () => { },
+  setToken: () => { },
+  setNotification: () => { },
 });
 
-// Provider Props Interface
+// Provider Props
 interface ContextProviderProps {
   children: ReactNode;
 }
 
 export const ContextProvider = ({ children }: ContextProviderProps) => {
-  // Initialize states
   const [user, _setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
     return storedUser ? JSON.parse(storedUser) : null;
   });
+
   const [token, _setToken] = useState<string | null>(() => {
     const storedToken = localStorage.getItem(STORAGE_KEYS.TOKEN);
     return storedToken;
   });
+
   const [notification, _setNotification] = useState<string | null>(null);
 
-  // State setters
   const setToken = (newToken: string | null) => {
     _setToken(newToken);
-    // console.log("token: ", newToken);
     if (newToken) {
       localStorage.setItem(STORAGE_KEYS.TOKEN, newToken);
     } else {
@@ -70,17 +71,21 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
 
   const setUser = (newUser: User | null) => {
     _setUser(newUser);
-    // console.log("user: ", newUser);
+
     try {
       if (newUser) {
-        // Pastikan name dan email ada sebelum menyimpan ke localStorage
+        // Logging semua data yang masuk (opsional untuk debug)
+        console.log("Setting user with full object:", newUser);
+
+        // Validasi wajib
         if (!newUser.name) {
-          console.warn("User name is missing when setting user");
+          console.warn("User name is missing");
         }
         if (!newUser.email) {
-          console.warn("User email is missing when setting user");
+          console.warn("User email is missing");
         }
 
+        // Semua properti, termasuk optional, disimpan
         localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(newUser));
       } else {
         localStorage.removeItem(STORAGE_KEYS.USER);
@@ -115,15 +120,8 @@ export const ContextProvider = ({ children }: ContextProviderProps) => {
   );
 };
 
-// Enhanced useStateContext hook
+// Hook untuk mengakses context
 export const useStateContext = (): StateContextType => {
   const context = useContext(StateContext);
-  // if (process.env.NODE_ENV !== "production") {
-  //   console.log("Context accessed with values:", {
-  //     hasToken: !!context.token,
-  //     hasUser: !!context.user,
-  //     hasNotification: !!context.notification,
-  //   });
-  // }
   return context;
 };

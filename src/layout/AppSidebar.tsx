@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
+import Profile from "../icons/profile-icon-white.svg";
 import {
   BoxIcon,
   ChevronRightIcon,
   HorizontaLDots,
   ListIcon,
   UserCircleIcon,
+  UserIcon,
   UsersIcon,
   BuildingIcon,
   MuiIcon,
@@ -24,59 +26,6 @@ type NavItem = {
 
 // Define navigation items for different roles
 const roleNavigations: Record<string, NavItem[]> = {
-  admin: [
-    {
-      icon: <HomeIcon />,
-      name: "Dashboard",
-      path: "/admin/dashboard",
-    },
-    {
-      icon: <UserCircleIcon />,
-      name: "User Management",
-      subItems: [{ name: "User", path: "/admin/user", pro: false }],
-    },
-    {
-      icon: <BoxIcon />,
-      name: "Marketing Kits",
-      subItems: [
-        { name: "Media", path: "/admin/media", pro: false },
-        { name: "FAQ", path: "/admin/faq", pro: false },
-      ],
-    },
-    {
-      name: "LMS Setting",
-      icon: <ListIcon />,
-      subItems: [
-        { name: "Manage Module", path: "/admin/learning-module", pro: false },
-        { name: "Manage Post Test", path: "/admin/post-test", pro: false },
-      ],
-    },
-  ],
-  manager: [
-    {
-      icon: <HomeIcon />,
-      name: "Dashboard",
-      path: "manager/dashboard",
-    },
-  ],
-  ["team-leader"]: [
-    {
-      icon: <UserCircleIcon />,
-      name: "Dashboard",
-      path: "/mho/dashboard",
-    },
-    {
-      icon: <BoxIcon />,
-      name: "Pelaku Usaha",
-      subItems: [
-        {
-          name: "Pelaku Usaha",
-          path: "/tl/company/status",
-        },
-        { name: "Submission", path: "/tl/company/submission" },
-      ],
-    },
-  ],
   mho: [
     // {
     //   icon: <HomeIcon />,
@@ -115,25 +64,25 @@ const roleNavigations: Record<string, NavItem[]> = {
     },
   ],
   agent: [
-    // {
-    //   icon: <UserCircleIcon />,
-    //   name: "Dashboard",
-    //   path: "/agent/dashboard",
-    // },
     {
       icon: <BuildingIcon />,
-      name: "Activities",
-      path: "/agent/activities",
+      name: "Dashboard",
+      path: "dashboard",
     },
     {
       icon: <ListDetailIcon />,
       name: "Submission",
-      path: "/agent/submission",
+      path: "submission",
     },
     {
       icon: <BooksIcon />,
       name: "E-Learning",
-      path: "/agent/e-learning",
+      path: "e-learning",
+    },
+    {
+      icon: <UserIcon />,
+      name: "Profile",
+      path: "profile",
     },
 
     // {
@@ -224,8 +173,32 @@ const AppSidebar: React.FC<SidebarProps> = () => {
     });
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+  const [userData, setUserData] = useState<{ name?: string; email?: string }>({});
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("USER") || "{}");
+    setUserData({ name: user.name, email: user.email });
+  }, []);
+
+  const handleSignOut = () => {
+    localStorage.clear();
+    window.location.href = "/signin";
+  };
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // Tailwind's 'lg' breakpoint
+    };
+
+    handleResize(); // Cek saat pertama kali
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const renderMenuItems = (items: NavItem[]) => (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-2">
       {items.map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
@@ -341,34 +314,35 @@ const AppSidebar: React.FC<SidebarProps> = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200
-        ${isExpanded || isMobileOpen
-          ? "w-[290px]"
-          : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
-        }
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0  bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-gray-200
+      ${isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"}
+      ${isMobile ? `${isMobileOpen ? "right-0" : "-right-full"} border-l` : "left-0 border-r"}
+      ${isMobile ? "" : "lg:left-0 lg:translate-x-0"}
+    `}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 right-0 bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-l border-gray-200 
-    ${
-      isExpanded || isMobileOpen
-        ? "w-[290px]"
-        : isHovered
-        ? "w-[290px]"
-        : "w-[90px]"
-    }
-    ${isMobileOpen ? "translate-x-0" : "translate-x-full"}
-    lg:translate-x-0`}
-      onMouseEnter={() => !isExpanded && setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    > */}
 
-      {/* {!isMobile ? ( */}
+      {/* Info Agen di Mobile */}
+      {isMobile && isMobileOpen && (
+        <div className="flex flex-row items-center py-4 px-6 bg-gradient-to-r from-[#d1e9bf] to-[#87c75a] text-white shadow">
+
+          <img
+            src={Profile}
+            alt="Profile"
+            className="w-8 h-8 rounded-full mr-3"
+          />
+          <div className="flex flex-col">
+            <p className="text-xl font-bold">{userData?.name || "Profile tidak ditemukan"}</p>
+            <p className="text-xs font-semibold">{userData?.email || "Email tidak ditemukan"}</p>
+          </div>
+
+
+        </div>
+      )}
+
+
+      {/* Logo */}
       <div
         className={`hidden lg:block py-8 ${!isExpanded && !isHovered
           ? "lg:flex justify-center"
@@ -382,13 +356,14 @@ const AppSidebar: React.FC<SidebarProps> = () => {
           </span>
         </h4>
       </div>
-      {/* ) : null} */}
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
-        <nav className="mb-6">
+
+      {/* Menu */}
+      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar px-6">
+        <nav className="mb-6 lg:mt-0 mt-4">
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
+                className={`mb-2 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "justify-start"
                   }`}
@@ -403,7 +378,20 @@ const AppSidebar: React.FC<SidebarProps> = () => {
             </div>
           </div>
         </nav>
+        {isMobile && isMobileOpen && (
+          <div className="pb-6 mt-auto">
+            <button
+              onClick={handleSignOut}
+              className="w-full py-2 bg-black text-white rounded-md font-semibold text-sm hover:bg-gray-800 transition"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+
       </div>
+
+
     </aside>
   );
 };

@@ -13,7 +13,13 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
     const cleanPath = location.pathname.split("?")[0].split("#")[0];
     const pathSegments = cleanPath.split("/").filter((segment) => segment);
 
-    // Generate breadcrumb items from segments
+    const customDisplayNames: Record<string, string> = {
+      dashboard: "Dashboard",
+      submission: "Submissions",
+      users: "Users",
+      // Tambahkan lainnya jika perlu
+    };
+
     return pathSegments.map((segment, index) => {
       const path = "/" + pathSegments.slice(0, index + 1).join("/");
       const displayName = segment
@@ -21,8 +27,8 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
-      // For the first segment, replace with "Dashboard" if it's not already custom named
-      const finalDisplayName = index === 0 ? "Dashboard" : displayName;
+      const finalDisplayName =
+        customDisplayNames[segment.toLowerCase()] ?? displayName;
 
       return {
         path,
@@ -35,7 +41,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
   return (
     <div className="flex flex-wrap items-center justify-between gap-1">
       {/* Header */}
-      <div className="w-full h-20 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-end justify-start px-6 py-3 mb-3 rounded-3xl text-white">
+      <div className="w-full h-20 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-end justify-start px-6 py-3 mb-2 rounded-2xl text-white">
         <h1 className="font-normal text-3xl">{pageTitle}</h1>
       </div>
       {/* Breadcrumb in gradient bar */}

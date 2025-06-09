@@ -1,94 +1,134 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosClient from "../../../axios-client";
 
-const questions = [
-  {
-    id: 1,
-    question: "Lorem ipsum dolor sit amet?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-  {
-    id: 2,
-    question: "Quisque efficitur egestas arcu?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-  {
-    id: 3,
-    question: "Nunc lacinia placerat arcu?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-  {
-    id: 4,
-    question: "Vestibulum ante ipsum primis?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-  {
-    id: 5,
-    question: "Fusce convallis lacus id risus tincidunt?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-  {
-    id: 6,
-    question: "Phasellus lacinia velit a feugiat dapibus?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-  {
-    id: 7,
-    question: "Curabitur at massa eget justo commodo?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-  {
-    id: 8,
-    question: "Aenean facilisis sem vel libero dapibus?",
-    options: ["Answer A", "Answer B", "Answer C", "Answer D"],
-  },
-];
+type QuestionType = {
+  id: number;
+  ask_image: string;
+  ask_text: string;
+  a: string;
+  b: string;
+  c: string;
+  d: string;
+  e: string;
+  key: string;
+};
 
 const AgentPostTest = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const questionsPerPage = 4;
-  const indexOfLast = currentPage * questionsPerPage;
-  const indexOfFirst = indexOfLast - questionsPerPage;
-  const currentQuestions = questions.slice(indexOfFirst, indexOfLast);
+  const navigate = useNavigate();
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
+  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
+  const [nextExamId, setNextExamId] = useState<number | null>(null);
+
+  // Ambil data soal
+  useEffect(() => {
+    const fetchQuestionsFromExamTest = async () => {
+      try {
+        const res = await axiosClient.get("/exam-tests/create");
+        const examData = res.data;
+
+        // Ambil dan format soal dari field `work`
+        const formatted = examData.work.map((item: any) => ({
+          id: item.quiz.id,
+          ask_image: item.quiz.ask_image || "",
+          ask_text: item.quiz.ask_text || "",
+          a: item.quiz.a || "",
+          b: item.quiz.b || "",
+          c: item.quiz.c || "",
+          d: item.quiz.d || "",
+          e: item.quiz.e || "",
+          key: "", // key tidak tersedia di endpoint ini
+        }));
+
+        setQuestions(formatted);
+        setNextExamId(examData.id); // gunakan id dari exam-test
+      } catch (error) {
+        console.error("Gagal mengambil data dari /exam-tests/create:", error);
+      }
+    };
+
+    fetchQuestionsFromExamTest();
+  }, []);
+
+
+  const handleAnswerChange = (questionId: number, answer: string) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: answer,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
+
+      if (nextExamId !== null) {
+        formData.append("exam_id", String(nextExamId));
+      }
+
+      Object.entries(answers).forEach(([questionId, answer]) => {
+        formData.append(`answer[${questionId}]`, answer);
+      });
+
+      await axiosClient.post("/exam-tests", formData);
+
+      navigate("/result-post-test", {
+        state: { status: "submitted" },
+      });
+    } catch (error) {
+      console.error("Gagal mengirim jawaban:", error);
+    }
+  };
+
   return (
     <div>
-      {currentQuestions.map((q, index) => (
+      <div className="w-full h-20 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-end justify-start px-6 py-3 mb-3 rounded-3xl text-white">
+        <h1 className="font-normal text-3xl">Post Test</h1>
+      </div>
+
+      {questions.map((q, index) => (
         <div
           key={q.id}
-          className="w-full max-w-full sm:mx-0 bg-white border border-gray-200 rounded-xl shadow-sm my-4 p-4"
+          className="w-full max-w-full bg-white border border-gray-200 rounded-xl shadow-sm my-4 p-4"
         >
           <h3 className="font-semibold mb-2 text-left">
-            {indexOfFirst + index + 1}. {q.question}
+            {index + 1}. {q.ask_text}
           </h3>
+
+          {q.ask_image && (
+            <img
+              src={q.ask_image}
+              alt="Question Illustration"
+              className="mb-2 max-w-full rounded"
+            />
+          )}
+
           <div className="grid grid-cols-2 gap-4">
-            {q.options.map((opt, i) => (
-              <label key={i} className="flex items-center space-x-2">
+            {["a", "b", "c", "d", "e"].map((key) => (
+              <label key={key} className="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="radio"
                   name={`question-${q.id}`}
-                  value={opt}
+                  value={q[key as keyof QuestionType]}
+                  checked={answers[q.id] === key}
+                  onChange={() => handleAnswerChange(q.id, key)}
                   className="form-radio text-blue-500"
                 />
-                <span>{opt}</span>
+                <span>{q[key as keyof QuestionType]}</span>
               </label>
             ))}
           </div>
         </div>
       ))}
-      {/* Pagination */}
-      <div className="flex justify-center mt-6">
-        {[1, 2].map((page) => (
-          <div
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={`px-3 py-1 rounded cursor-pointer ${
-              page === currentPage
-                ? "bg-black text-white"
-                : "bg-gray-200 text-black"
-            }`}
-          >
-            {page}
-          </div>
-        ))}
+
+      <div className="mt-6 text-right">
+        <button
+          onClick={handleSubmit}
+          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-400 hover:text-black"
+          disabled={nextExamId === null}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
+import { useNavigate } from "react-router-dom";
+import YoutubeIcon from "../../../../src/icons/youtube-icon.svg";
+import PDFIcon from "../../../../src/icons/pdf-icon.svg";
 
 interface Modul {
   id: number;
@@ -13,11 +16,13 @@ interface Modul {
 const MHOLearningModule = () => {
   const [modules, setModules] = useState<Modul[]>([]);
   const [selectedModule, setSelectedModule] = useState<Modul | null>(null);
+  const [showPostTestButton, setShowPostTestButton] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosClient.get("/ext/medias");
+        const response = await axiosClient.get("/exam-media");
         const rawData = response.data.data;
 
         const formattedData = rawData.map((item: any) => ({
@@ -36,6 +41,41 @@ const MHOLearningModule = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      try {
+        const storedUser = localStorage.getItem("USER");
+        if (!storedUser) return;
+
+        const user = JSON.parse(storedUser);
+        const userId = user.id;
+
+        const response = await axiosClient.get(`/users/${userId}`);
+        const { tnc_accept_at, test_passed_at } = response.data;
+
+        if (!tnc_accept_at || !test_passed_at) {
+          setShowPostTestButton(true);
+        }
+      } catch (error) {
+        console.error("Error fetching user status:", error);
+      }
+    };
+
+    checkUserStatus();
+  }, []);
+
+  // Fungsi untuk icon modul
+  const getIconByType = (type: string) => {
+    switch (type) {
+      case "pdf":
+        return PDFIcon;
+      case "youtube":
+      default:
+        return YoutubeIcon;
+    }
+  };
+
 
   // Fungsi untuk close modal
   const closeModal = () => {
@@ -60,46 +100,54 @@ const MHOLearningModule = () => {
         {modules.map((item) => (
           <div
             key={item.id}
-            className="border-2 border-[#7EC34B] rounded-xl flex flex-col items-center space-y-2 shadow-sm"
+            className="border-1 bg-white border-gray-400 rounded-xl flex flex-col items-center shadow-sm"
           >
             {/* Top Row: Icon + Type + Learn Button */}
-            <div className="grid grid-cols-2 w-full px-6 pt-4">
+            <div className="grid grid-cols-2 w-full px-3 sm:px-6 py-4">
               <div className="flex flex-col items-center">
                 <img
-                  src={
-                    item.type === "pdf"
-                      ? "/src/assets/PDF.svg"
-                      : "/src/assets/Youtube.svg"
-                  }
+                  src={getIconByType(item.type)}
                   alt={item.type}
-                  className="w-14 h-14"
+                  className="w-10 h-10 sm:w-14 sm:h-14"
                 />
-                <span className="text-[#7EC34B] text-sm font-semibold capitalize mt-1">
+                <span className="text-black text-xs sm:text-sm font-semibold capitalize mt-1">
                   {item.type}
                 </span>
               </div>
               <div className="flex items-center justify-center">
                 <button
                   onClick={() => setSelectedModule(item)}
-                  className="bg-[#7EC34B] text-white text-lg font-medium rounded-md px-4 py-1 shadow hover:bg-[#bee1a5] hover:text-[#7EC34B] hover:font-bold"
+                  className="bg-black text-white text-sm sm:text-lg font-medium rounded-md px-3 sm:px-4 py-1 shadow hover:bg-[#bee1a5] hover:text-black hover:font-bold"
                 >
                   Learn
                 </button>
+
               </div>
             </div>
 
             {/* Middle: Modul Name */}
-            <h3 className="text-xl font-semibold text-[#7EC34B] text-left w-full border-y-2 border-[#7EC34B] py-1 px-6">
+            <h3 className="text-base sm:text-xl font-semibold text-black text-left w-full border-y border-black py-1 px-4 sm:px-6">
               {item.name}
             </h3>
 
             {/* Bottom: Description */}
-            <p className="text-xs text-[#7EC34B] text-left px-6 pb-4">
+            <p className="text-[10px] sm:text-xs text-black text-left px-4 sm:px-6 py-4">
               {item.info}
             </p>
           </div>
         ))}
       </div>
+
+      {showPostTestButton && (
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => navigate("/post-test")}
+            className="bg-black text-white font-semibold px-6 py-2 rounded-md shadow hover:bg-gray-400 hover:text-black"
+          >
+            Go to Post-Test
+          </button>
+        </div>
+      )}
 
       {/* Modal */}
       {selectedModule && (

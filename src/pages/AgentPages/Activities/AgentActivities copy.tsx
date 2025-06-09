@@ -203,8 +203,8 @@ const AgentActivities = () => {
           Add New
         </button>
       </div>
-      <div className="rounded-xl shadow-sm overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
+      <div className="rounded-lg shadow-sm overflow-hidden">
+        <table className="mb-30 min-w-full divide-y divide-gray-200">
           <thead className="bg-[#1975a6] text-white">
             <tr>
               <th
@@ -247,12 +247,12 @@ const AgentActivities = () => {
             {submissionHistoriesData.length > 0 &&
               submissionHistoriesData.map((submissionHistory) => (
                 <tr className="hover:bg-gray-50">
-                  <td className="px-6 py-4 ">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
                       {getUserName(submissionHistory.user_id)}
                     </div>
                   </td>
-                  <td className="px-6 py-4 ">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       {/* {submissionHistory.date.substring(0, 10)}  */}
                       {formatDate(submissionHistory.date)}
@@ -267,12 +267,12 @@ const AgentActivities = () => {
                       <span className="text-gray-600">Tidak ada status</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 ">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 inline-flex text-sm leading-5 text-gray-900">
                       {submissionHistory.activity}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {submissionHistory.response ? (
                       <span className="text-sm text-gray-900">
                         {submissionHistory.response}
@@ -281,7 +281,7 @@ const AgentActivities = () => {
                       <span className="text-gray-600">Tidak ada response</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="relative">
                       <button
                         aria-label="company-menus"

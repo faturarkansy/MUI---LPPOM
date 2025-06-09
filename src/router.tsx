@@ -8,36 +8,34 @@ import AuthLayouts from "./pages/AuthPages/AuthPageLayout";
 import SignIn from "./pages/AuthPages/SignIn";
 // import SignUp from "./pages/AuthPages/SignUp";
 
-// import AdminDashboard from "./pages/AdminPages/Dashboard/AdminDashboard";
-// import AdminUser from "./pages/AdminPages/UserManagement/AdminUser";
-// import AdminMedia from "./pages/AdminPages/Marketing/AdminMedia";
-// import AdminFAQ from "./pages/AdminPages/Marketing/AdminFAQ";
-// import AdminPostTest from "./pages/AdminPages/LMS/AdminPostTest";
-// import AdminLearningModule from "./pages/AdminPages/LMS/AdminLearningModule";
-
-// import ManagerDashboard from "./pages/ManagerPages/Dashboard/ManagerDashboard";
-
-// import TLDashboard from "./pages/TLPages/Dashboard/TLDashboard";
-// import TLCompany from "./pages/TLPages/Company/TLCompany";
-// import TLSubmission from "./pages/TLPages/Company/TLSubmission";
-
 import MHODashboard from "./pages/MHOPages/Dashboard/MHODashboard";
 import MHOAgent from "./pages/MHOPages/Agent/MHOAgent";
 import MHOSubmission from "./pages/MHOPages/Submission/MHOSubmission";
 import MHOCompany from "./pages/MHOPages/Company/MHOCompany";
 import MHOActivities from "./pages/MHOPages/Activities/MHOActivities";
-import MHOLearningModule from "./pages/MHOPages/LMS/MHOLearningModule";
+// import MHOLearningModule from "./pages/MHOPages/LMS/MHOLearningModule";
 
-// import AgentDashboard from "./pages/AgentPages/Dashboard/AgentDashboard";
+import AgentDashboard from "./pages/AgentPages/Dashboard/AgentDashboard";
 import AgentAgreement from "./pages/AgentPages/StartingKit/AgentAgreement";
 import AgentChangePassword from "./pages/AuthPages/ChangePassword";
+
 import AgentCompany from "./pages/AgentPages/Submission/AgentCompany";
 import AgentSubmission from "./pages/AgentPages/Submission/AgentSubmission";
+import AgentAddSubmission from "./pages/AgentPages/Submission/AgentAddSubmission";
+import AgentDetailSubmission from "./pages/AgentPages/Submission/AgentDetailSubmission";
+import AgentAddActivity from "./pages/AgentPages/Submission/AgentAddActivity";
+
+import AgentProfile from "./pages/AgentPages/Profile/AgentProfile";
+import AgentEditProfile from "./pages/AgentPages/Profile/AgentEditProfile";
+import AgentProfileChangePassword from "./pages/AgentPages/Profile/AgentChangePassword";
+import AgentProfileAgreement from "./pages/AgentPages/Profile/AgentAgreement";
+
 import AgentActivities from "./pages/AgentPages/Activities/AgentActivities";
 import AgentMedia from "./pages/AgentPages/Marketing/AgentMedia";
 import AgentFAQ from "./pages/AgentPages/Marketing/AgentFAQ";
 import AgentPostTest from "./pages/AgentPages/LMS/AgentPostTest";
 import AgentLearningModule from "./pages/AgentPages/LMS/AgentLearningModule";
+import AgentResultPostTest from "./pages/AgentPages/LMS/AgentResultPostTest";
 
 const router = createBrowserRouter([
   {
@@ -58,91 +56,6 @@ const router = createBrowserRouter([
       // },
     ],
   },
-
-  // {
-  //   path: "/admin",
-  //   element: (
-  //     <ProtectedRoute allowedRoles={["admin"]}>
-  //       <AppLay />
-  //     </ProtectedRoute>
-  //   ),
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: <Navigate to="dashboard" />,
-  //     },
-  //     {
-  //       path: "dashboard",
-  //       element: <AdminDashboard />,
-  //     },
-  //     {
-  //       path: "user",
-  //       element: <AdminUser />,
-  //     },
-  //     {
-  //       path: "media",
-  //       element: <AdminMedia />,
-  //     },
-  //     {
-  //       path: "faq",
-  //       element: <AdminFAQ />,
-  //     },
-  //     {
-  //       path: "post-test",
-  //       element: <AdminPostTest />,
-  //     },
-  //     {
-  //       path: "learning-module",
-  //       element: <AdminLearningModule />,
-  //     },
-  //   ],
-  // },
-
-  // {
-  //   path: "/manager",
-  //   element: (
-  //     <ProtectedRoute allowedRoles={["manager"]}>
-  //       <AppLay />
-  //     </ProtectedRoute>
-  //   ),
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: <Navigate to="dashboard" />,
-  //     },
-  //     {
-  //       path: "dashboard",
-  //       element: <ManagerDashboard />,
-  //     },
-  //   ],
-  // },
-
-  // {
-  //   path: "/tl",
-  //   element: (
-  //     <ProtectedRoute allowedRoles={["team-leader"]}>
-  //       <AppLay />
-  //     </ProtectedRoute>
-  //   ),
-  //   children: [
-  //     {
-  //       path: "",
-  //       element: <Navigate to="dashboard" />,
-  //     },
-  //     {
-  //       path: "dashboard",
-  //       element: <TLDashboard />,
-  //     },
-  //     {
-  //       path: "company",
-  //       element: <TLCompany />,
-  //     },
-  //     {
-  //       path: "submission",
-  //       element: <TLSubmission />,
-  //     },
-  //   ],
-  // },
 
   {
     path: "/mho",
@@ -177,15 +90,15 @@ const router = createBrowserRouter([
         element: <MHOActivities />,
       },
 
-      {
-        path: "learning-module",
-        element: <MHOLearningModule />,
-      },
+      // {
+      //   path: "learning-module",
+      //   element: <MHOLearningModule />,
+      // },
     ],
   },
 
   {
-    path: "/agent/agent-agreement",
+    path: "agreement",
     element: (
       <ProtectedRoute allowedRoles={["agent"]}>
         <AgentAgreement />
@@ -194,7 +107,7 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/agent/change-password",
+    path: "change-password",
     element: (
       <ProtectedRoute allowedRoles={["agent"]}>
         <AgentChangePassword />
@@ -203,7 +116,7 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/agent",
+    path: "/",
     element: (
       <ProtectedRoute allowedRoles={["agent"]}>
         <AppLay />
@@ -215,12 +128,41 @@ const router = createBrowserRouter([
         element: <Navigate to="/submission" />,
       },
       {
-        path: "agent-agreement",
-        element: <AgentAgreement />,
+        path: "dashboard",
+        element: <AgentDashboard />,
       },
       {
         path: "submission",
         element: <AgentSubmission />,
+      },
+      {
+        path: "submission/add-submission/",
+        element: <AgentAddSubmission />,
+      },
+      {
+        path: "submission/detail-submission/",
+        element: <AgentDetailSubmission />,
+      },
+      {
+        path: "submission/detail-submission/add-activity",
+        element: <AgentAddActivity />,
+      },
+
+      {
+        path: "profile",
+        element: <AgentProfile />,
+      },
+      {
+        path: "profile/edit-profile",
+        element: <AgentEditProfile />,
+      },
+      {
+        path: "profile/change-password",
+        element: <AgentProfileChangePassword />,
+      },
+      {
+        path: "profile/terms-and-conditions",
+        element: <AgentProfileAgreement />,
       },
       {
         path: "company",
@@ -245,6 +187,10 @@ const router = createBrowserRouter([
       {
         path: "e-learning",
         element: <AgentLearningModule />,
+      },
+      {
+        path: "result-post-test",
+        element: <AgentResultPostTest />,
       },
     ],
   },

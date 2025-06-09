@@ -12,63 +12,43 @@ interface AddUserModalProps {
 
 interface CompanyFormData {
   user_id: string;
+  nib: string;
+  name: string;
   business_scale_id: string;
   location_id: string;
-  name: string;
-  nib: string;
+  product_type_id: string;
+  type: string;
+  date: string;
+  facility: string;
+  product: string;
   meta: {
     address: string;
     phone: string;
-    fax: string;
     email: string;
     pic_name: string;
-    pic_title: string;
     pic_phone: string;
     pic_email: string;
-    cp_name: string;
-    cp_title: string;
-    cp_phone: string;
-    cp_email: string;
-  };
-  submission: {
-    product_type_id: string;
-    type: string;
-    date: string;
-    facility: string;
-    product: string;
-    due: string;
-    cost: string;
   };
 }
 
 const initCompanyFormData: CompanyFormData = {
   user_id: "",
+  nib: "",
+  name: "",
   business_scale_id: "",
   location_id: "",
-  name: "",
-  nib: "",
+  product_type_id: "",
+  type: "",
+  date: "",
+  facility: "",
+  product: "",
   meta: {
     address: "",
     phone: "",
-    fax: "",
     email: "",
     pic_name: "",
-    pic_title: "",
     pic_phone: "",
     pic_email: "",
-    cp_name: "",
-    cp_title: "",
-    cp_phone: "",
-    cp_email: "",
-  },
-  submission: {
-    product_type_id: "",
-    type: "",
-    date: "",
-    facility: "",
-    product: "",
-    due: "",
-    cost: "",
   },
 };
 
@@ -118,40 +98,16 @@ const SubmissionAddModal: React.FC<AddUserModalProps> = ({
       [
         "address",
         "phone",
-        "fax",
         "email",
         "pic_name",
-        "pic_title",
         "pic_phone",
         "pic_email",
-        "cp_name",
-        "cp_title",
-        "cp_phone",
-        "cp_email",
       ].includes(id)
     ) {
       setFormData((prev) => ({
         ...prev,
         meta: {
           ...prev.meta,
-          [id]: value,
-        },
-      }));
-    } else if (
-      [
-        "product_type_id",
-        "type",
-        "date",
-        "facility",
-        "product",
-        "due",
-        "cost",
-      ].includes(id)
-    ) {
-      setFormData((prev) => ({
-        ...prev,
-        submission: {
-          ...prev.submission,
           [id]: value,
         },
       }));
@@ -217,7 +173,7 @@ const SubmissionAddModal: React.FC<AddUserModalProps> = ({
       <div className="px-2 py-1 rounded-2xl bg-white">
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white p-5 rounded-lg w-[clamp(300px,80vw,500px)] max-h-[90vh] overflow-y-auto shadow-md"
+          className="bg-white p-5 rounded-lg w-[clamp(300px,80vw,500px)] max-h-[90vh] overflow-y-auto"
         >
           <div className="flex justify-end items-center">
             <button
@@ -302,6 +258,93 @@ const SubmissionAddModal: React.FC<AddUserModalProps> = ({
               </select>
             </div>
             <div>
+              <label htmlFor="product_type_id" className="text-sm">
+                Jenis Produk
+              </label>
+              <select
+                id="product_type_id"
+                value={formData.product_type_id}
+                onChange={handleInputChange}
+                className="w-full p-2 mb-[10px] border border-[#ccc] rounded box-border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                // 'appearance-none' ditambahkan untuk menghilangkan styling default browser pada select jika diinginkan,
+                required
+              >
+                <option value="" disabled>
+                  .....
+                </option>
+                {productTypes.map((productType: any) => (
+                  <option key={productType.id} value={productType.id}>
+                    {productType.type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="type" className="text-sm">
+                Jenis Pengajuan
+              </label>
+              <select
+                id="type"
+                value={formData.type}
+                onChange={handleInputChange}
+                className="w-full p-2 mb-[10px] border border-[#ccc] rounded box-border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                // 'appearance-none' ditambahkan untuk menghilangkan styling default browser pada select jika diinginkan,
+                required
+              >
+                <option value="" disabled>
+                  .....
+                </option>
+                <option key={1} value={"Baru"}>
+                  Baru
+                </option>
+                <option key={2} value={"Pengembangan Produk"}>
+                  Pengembangan Produk
+                </option>
+                <option key={3} value={"Pengembangan Fasilitas"}>
+                  Pengembangan Fasilitas
+                </option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="date" className="text-sm">
+                Tanggal Pengajuan
+              </label>
+              <input
+                id="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                type="date"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="facility" className="text-sm">
+                Jumlah Fasilitas Produksi
+              </label>
+              <input
+                id="facility"
+                value={formData.facility}
+                onChange={handleInputChange}
+                type="number"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="product" className="text-sm">
+                Jumlah Produk
+              </label>
+              <input
+                id="product"
+                value={formData.product}
+                onChange={handleInputChange}
+                type="number"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
+                required
+              />
+            </div>
+            <div>
               <label htmlFor="address" className="text-sm">
                 Alamat Perusahaan
               </label>
@@ -321,19 +364,6 @@ const SubmissionAddModal: React.FC<AddUserModalProps> = ({
               <input
                 id="phone"
                 value={formData.meta.phone}
-                onChange={handleInputChange}
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="fax" className="text-sm">
-                Nomor Fax Perusahaan
-              </label>
-              <input
-                id="fax"
-                value={formData.meta.fax}
                 onChange={handleInputChange}
                 type="text"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
@@ -390,145 +420,6 @@ const SubmissionAddModal: React.FC<AddUserModalProps> = ({
                 onChange={handleInputChange}
                 type="text"
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="cp_name" className="flex text-sm">
-                <p>Nama CP</p>
-                <p className="ml-3 font-light">*(Opsional)</p>
-              </label>
-              <input
-                id="cp_name"
-                value={formData.meta.cp_name}
-                onChange={handleInputChange}
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="cp_phone" className="flex text-sm">
-                <p>Nomor Telepon CP</p>
-                <p className="ml-3 font-light">*(Opsional)</p>
-              </label>
-              <input
-                id="cp_phone"
-                value={formData.meta.cp_phone}
-                onChange={handleInputChange}
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="cp_email" className="flex text-sm">
-                <p>Email CP</p>
-                <p className="ml-3 font-light">*(Opsional)</p>
-              </label>
-              <input
-                id="cp_email"
-                value={formData.meta.cp_email}
-                onChange={handleInputChange}
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-              />
-            </div>
-            <div>
-              <label htmlFor="product_type_id" className="text-sm">
-                Jenis Produk
-              </label>
-              <select
-                id="product_type_id"
-                value={formData.submission.product_type_id}
-                onChange={handleInputChange}
-                className="w-full p-2 mb-[10px] border border-[#ccc] rounded box-border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                // 'appearance-none' ditambahkan untuk menghilangkan styling default browser pada select jika diinginkan,
-                required
-              >
-                <option value="" disabled>
-                  .....
-                </option>
-                {productTypes.map((productType: any) => (
-                  <option key={productType.id} value={productType.id}>
-                    {productType.type}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="type" className="text-sm">
-                Jenis Pengajuan
-              </label>
-              <select
-                id="type"
-                value={formData.submission.type}
-                onChange={handleInputChange}
-                className="w-full p-2 mb-[10px] border border-[#ccc] rounded box-border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                // 'appearance-none' ditambahkan untuk menghilangkan styling default browser pada select jika diinginkan,
-                required
-              >
-                <option value="" disabled>
-                  .....
-                </option>
-                <option key={1} value={"Baru"}>
-                  Baru
-                </option>
-                <option key={2} value={"Pengembangan Produk"}>
-                  Pengembangan Produk
-                </option>
-                <option key={3} value={"Pengembangan Fasilitas"}>
-                  Pengembangan Fasilitas
-                </option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="date" className="text-sm">
-                Tanggal Pengajuan
-              </label>
-              <input
-                id="date"
-                value={formData.submission.date}
-                onChange={handleInputChange}
-                type="date"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="facility" className="text-sm">
-                Jumlah Fasilitas Produksi
-              </label>
-              <input
-                id="facility"
-                value={formData.submission.facility}
-                onChange={handleInputChange}
-                type="number"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="product" className="text-sm">
-                Jumlah Produk
-              </label>
-              <input
-                id="product"
-                value={formData.submission.product}
-                onChange={handleInputChange}
-                type="number"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="due" className="text-sm">
-                Tanggal Pengajuan Selesai
-              </label>
-              <input
-                id="due"
-                value={formData.submission.due}
-                onChange={handleInputChange}
-                type="date"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm"
-                required
               />
             </div>
             <div className="text-right pt-4">

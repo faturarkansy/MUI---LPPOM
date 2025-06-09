@@ -42,9 +42,8 @@ export default function UserDropdown() {
           {getUserData()?.name || "User"}
         </span>
         <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
           width="18"
           height="20"
           viewBox="0 0 18 20"
@@ -122,7 +121,7 @@ export default function UserDropdown() {
               fill=""
             />
           </svg>
-          Sign out
+          Logout
         </button>
       </Dropdown>
     </div>

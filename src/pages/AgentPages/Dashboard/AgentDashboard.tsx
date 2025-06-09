@@ -1,356 +1,223 @@
-import { IconUsersGroup, IconArrowUpRight } from "@tabler/icons-react";
-import arrowDown from "../../../assets/arrow-down.svg";
-import ExcelIcon from "../../../assets/Excel.png";
-import ImageIcon from "../../../assets/Image.png";
-import DocsIcon from "../../../assets/Docs.png";
-import PdfIcon from "../../../assets/Pdf.png";
-import FileIcon from "../../../assets/File Manager.png";
-import PlaceHolder from "../../../assets/placeholder.jpeg";
+import {
+  IconUserCheck,
+  IconUsersGroup,
+} from "@tabler/icons-react";
+import Chart from "react-apexcharts";
+import { useState, useEffect } from "react";
+import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
+import axiosClient from "../../../axios-client";
+
+interface Submission {
+  company_id: number | null;
+}
 
 const AgentDashboard = () => {
+  const [chartOptions, setChartOptions] = useState({});
+  const [totalSubmissions, setTotalSubmissions] = useState(0);
+  const [totalCompanies, setTotalCompanies] = useState(0);
+
+  const getResponsiveFontSize = () => {
+    if (window.innerWidth < 640) {
+      return '10px'; // Mobile
+    } else {
+      return '14px'; // Desktop
+    }
+  };
+
+  useEffect(() => {
+    const fetchTotalSubmissions = async () => {
+      try {
+        const response = await axiosClient.get("/submissions");
+        const submissions: Submission[] = response.data?.data || [];
+
+        // Set total submissions
+        setTotalSubmissions(submissions.length);
+
+        // Hitung company_id unik
+        const uniqueCompanyIds = new Set(submissions.map(item => item.company_id));
+        setTotalCompanies(uniqueCompanyIds.size);
+
+      } catch (error) {
+        console.error("Failed to fetch total submissions:", error);
+        setTotalSubmissions(0);
+        setTotalCompanies(0);
+      }
+    };
+
+
+    fetchTotalSubmissions();
+  }, []);
+
+
+  useEffect(() => {
+    const updateChartOptions = () => {
+      const fontSize = getResponsiveFontSize();
+
+      setChartOptions({
+        chart: {
+          id: "submission-status",
+          toolbar: { show: false },
+        },
+        xaxis: {
+          categories: ["Prospek", "Approaching", "Presenting", "Offering", "Closing"],
+          labels: {
+            style: {
+              fontSize: fontSize,
+              colors: '#4B5563',
+            },
+          },
+        },
+        yaxis: {
+          show: false,
+        },
+        grid: {
+          yaxis: {
+            lines: { show: false },
+          },
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '20%',
+            distributed: false,
+          },
+        },
+        dataLabels: {
+          enabled: true,
+        },
+        colors: ["#4F46E5"],
+        legend: {
+          show: false, // <- Tambahkan ini
+        },
+      });
+    };
+
+    // Set initial chart options
+    updateChartOptions();
+
+    // Update on resize
+    window.addEventListener('resize', updateChartOptions);
+    return () => window.removeEventListener('resize', updateChartOptions);
+  }, []);
+
+  const chartSeries = [
+    {
+      name: "Submission",
+      data: [12, 18, 10, 9, 14], // dummy data
+    },
+  ];
+
   return (
     <div>
-      {/* Grid */}
-      <div className="overflow-x-auto rounded-lg grid lg:grid-cols-4 grid-cols-2 lg:gap-4 gap-6">
-        {/* Card 1 */}
-        <div className="flex flex-col gap-y-2 md:gap-y-3 p-2 md:p-3 bg-white border border-gray-200 shadow-2xs rounded-lg">
-          <div className="flex items-center gap-x-2 md:gap-x-3">
-            <div className="bg-blue-200 text-blue-600 p-2.5 rounded-lg">
-              <IconUsersGroup />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Officer Count</p>
-              <h3 className="text-xl sm:text-2xl font-medium text-gray-800">
-                120
-              </h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="flex text-green-600 gap-x-2">
-              <IconArrowUpRight className="inline-block self-center p-1 bg-green-200 rounded-lg" />
-              <span className="inline-block text-sm">+18.25%</span>
-            </div>
-            <span className="text-xs">Increased last month</span>
-          </div>
-          {/* </div> */}
+      <PageBreadcrumb pageTitle="Dashboard" />
+      <div className="space-y-3 min-h-screen">
+        <div className="flex items-center space-x-2 mt-3">
+          <input
+            type="date"
+            className="border border-black px-2 py-1 text-xs rounded w-fit min-w-[5rem]"
+            defaultValue="2025-06-01"
+          />
+          <span className="text-gray-600">-</span>
+          <input
+            type="date"
+            className="border border-black px-2 py-1 text-xs rounded w-fit min-w-[5rem]"
+            defaultValue="2025-06-05"
+          />
+          <button className="bg-black text-white px-3 py-1 text-xs rounded w-fit">
+            Filter
+          </button>
         </div>
-        {/* Card 2 */}
-        <div className="flex flex-col gap-y-2 md:gap-y-3 p-2 md:p-3 bg-white border border-gray-200 shadow-2xs rounded-lg">
-          <div className="flex items-center gap-x-2 md:gap-x-3">
-            <div className="bg-blue-200 text-blue-600 p-2.5 rounded-lg">
-              <IconUsersGroup />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Officer Count</p>
-              <h3 className="text-xl sm:text-2xl font-medium text-gray-800">
-                120
-              </h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="flex text-green-600 gap-x-2">
-              <IconArrowUpRight className="inline-block self-center p-1 bg-green-200 rounded-lg" />
-              <span className="inline-block text-sm">+18.25%</span>
-            </div>
-            <span className="text-xs">Increased last month</span>
-          </div>
-          {/* </div> */}
-        </div>
-        {/* Card 3 */}
-        <div className="flex flex-col gap-y-2 md:gap-y-3 p-2 md:p-3 bg-white border border-gray-200 shadow-2xs rounded-lg">
-          <div className="flex items-center gap-x-2 md:gap-x-3">
-            <div className="bg-blue-200 text-blue-600 p-2.5 rounded-lg">
-              <IconUsersGroup />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Officer Count</p>
-              <h3 className="text-xl sm:text-2xl font-medium text-gray-800">
-                120
-              </h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="flex text-green-600 gap-x-2">
-              <IconArrowUpRight className="inline-block self-center p-1 bg-green-200 rounded-lg" />
-              <span className="inline-block text-sm">+18.25%</span>
-            </div>
-            <span className="text-xs">Increased last month</span>
-          </div>
-          {/* </div> */}
-        </div>
-        {/* Card 4 */}
-        <div className="flex flex-col gap-y-2 md:gap-y-3 p-2 md:p-3 bg-white border border-gray-200 shadow-2xs rounded-lg">
-          <div className="flex items-center gap-x-2 md:gap-x-3">
-            <div className="bg-blue-200 text-blue-600 p-2.5 rounded-lg">
-              <IconUsersGroup />
-            </div>
-            <div>
-              <p className="text-xs text-gray-500">Officer Count</p>
-              <h3 className="text-xl sm:text-2xl font-medium text-gray-800">
-                120
-              </h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="flex text-green-600 gap-x-2">
-              <IconArrowUpRight className="inline-block self-center p-1 bg-green-200 rounded-lg" />
-              <span className="inline-block text-sm">+18.25%</span>
-            </div>
-            <span className="text-xs">Increased last month</span>
-          </div>
-          {/* </div> */}
-        </div>
-      </div>
-      {/* End Grid */}
-      <div>
-        {/* Wide Card 1 */}
-        <div className="mt-6 w-full">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm w-full flex flex-col">
-            {/* Top Section */}
-            <div className="flex justify-between items-center px-4 py-6">
-              <div className="flex gap-4">
-                {/* Image Placeholder */}
-                <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden">
-                  <img
-                    src={PlaceHolder}
-                    alt="Follow-up with Jakarta Electronics"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                {/* Text Content */}
-                <div className="flex items-center">
-                  <div>
-                    <h3 className="text-left text-lg font-semibold text-gray-900">
-                      Follow-up with Jakarta Electronics
-                    </h3>
-                    <div className="text-left text-sm text-gray-500 flex gap-2">
-                      <span>April 20</span>
-                      <span>|</span>
-                      <span>Q2 Lead Conversion</span>
-                      <span>|</span>
-                      <span>In Progress</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Top 4 Cards */}
+        <div className="grid grid-cols-2 gap-3 mt-3">
 
-              {/* Priority Badge */}
-              <div className="flex items-center justify-between gap-2">
-                <span className="flex items-center px-3 h-8 align-middle text-sm text-red-700 bg-red-100 rounded-full font-medium">
-                  High
-                </span>
-                <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full text-gray-400 cursor-pointer">
-                  <img src={arrowDown} alt="Arrow Down" className="w-4 h-4" />
-                </div>
-              </div>
-            </div>
-
-            <hr className="border border-gray-300"></hr>
-
-            {/* Bottom Section */}
-            <div className="flex justify-between items-center p-4">
-              <div className="text-sm text-gray-700">
-                <span className="text-lg font-bold text-gray-900">2h</span>{" "}
-                estimated
-              </div>
-              <div className="flex gap-2 items-center">
-                <button
-                  type="button"
-                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium border-b-2 border-black bg-white rounded-t-lg text-black hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                >
-                  View Task
-                </button>
-                <button
-                  type="button"
-                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium border-2 border-black rounded-lg bg-black text-white hover:bg-gray-200 hover:text-black focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                >
-                  Select Task
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* End Wide Card 1 */}
-
-        {/* Wide Card 2 */}
-        <div className="mt-6 w-full">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm w-full flex flex-col">
-            {/* Top Section */}
-            <div className="flex justify-between items-center px-4 py-6">
-              <div className="flex gap-4">
-                {/* Image Placeholder */}
-                <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden">
-                  <img
-                    src={PlaceHolder}
-                    alt="Follow-up with Jakarta Electronics"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                {/* Text Content */}
-                <div className="flex items-center">
-                  <div>
-                    <h3 className="text-left text-lg font-semibold text-gray-900">
-                      Follow-up with Jakarta Electronics
-                    </h3>
-                    <div className="text-left text-sm text-gray-500 flex gap-2">
-                      <span>April 20</span>
-                      <span>|</span>
-                      <span>Q2 Lead Conversion</span>
-                      <span>|</span>
-                      <span>In Progress</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Priority Badge */}
-              <div className="flex items-center justify-between gap-2">
-                <span className="flex items-center px-3 h-8 align-middle text-sm text-red-700 bg-red-100 rounded-full font-medium">
-                  High
-                </span>
-                <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full text-gray-400 cursor-pointer">
-                  <img src={arrowDown} alt="Arrow Down" className="w-4 h-4" />
-                </div>
-              </div>
-            </div>
-
-            <hr className="border border-gray-300"></hr>
-
-            {/* Bottom Section */}
-            <div className="flex justify-between items-center p-4">
-              <div className="text-sm text-gray-700">
-                <span className="text-lg font-bold text-gray-900">2h</span>{" "}
-                estimated
-              </div>
-              <div className="flex gap-2 items-center">
-                <button
-                  type="button"
-                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium border-b-2 border-black bg-white rounded-t-lg text-black hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                >
-                  View Task
-                </button>
-                <button
-                  type="button"
-                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium border-2 border-black rounded-lg bg-black text-white hover:bg-gray-200 hover:text-black focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                >
-                  Select Task
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* End Wide Card 2 */}
-
-        {/* Wide Card 3 */}
-        <div className="mt-6 w-full">
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm w-full flex flex-col">
-            {/* Top Section */}
-            <div className="flex justify-between items-center px-4 py-6">
-              <div className="flex gap-4">
-                {/* Image Placeholder */}
-                <div className="w-16 h-16 bg-gray-100 rounded-md overflow-hidden">
-                  <img
-                    src={PlaceHolder}
-                    alt="Follow-up with Jakarta Electronics"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                {/* Text Content */}
-                <div className="flex items-center">
-                  <div>
-                    <h3 className="text-left text-lg font-semibold text-gray-900">
-                      Follow-up with Jakarta Electronics
-                    </h3>
-                    <div className="text-left text-sm text-gray-500 flex gap-2">
-                      <span>April 20</span>
-                      <span>|</span>
-                      <span>Q2 Lead Conversion</span>
-                      <span>|</span>
-                      <span>In Progress</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Priority Badge */}
-              <div className="flex items-center justify-between gap-2">
-                <span className="flex items-center px-3 h-8 align-middle text-sm text-red-700 bg-red-100 rounded-full font-medium">
-                  High
-                </span>
-                <div className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full text-gray-400 cursor-pointer">
-                  <img src={arrowDown} alt="Arrow Down" className="w-4 h-4" />
-                </div>
-              </div>
-            </div>
-
-            <hr className="border border-gray-300"></hr>
-
-            {/* Bottom Section */}
-            <div className="flex justify-between items-center p-4">
-              <div className="text-sm text-gray-700">
-                <span className="text-lg font-bold text-gray-900">2h</span>{" "}
-                estimated
-              </div>
-              <div className="flex gap-2 items-center">
-                <button
-                  type="button"
-                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium border-b-2 border-black bg-white rounded-t-lg text-black hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                >
-                  View Task
-                </button>
-                <button
-                  type="button"
-                  className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium border-2 border-black rounded-lg bg-black text-white hover:bg-gray-200 hover:text-black focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-                >
-                  Select Task
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* End Wide Card 3 */}
-      </div>
-      {/* Quick Access Section */}
-      <div className="mt-8 w-full">
-        <div className="flex justify-between items-center mb-4 ">
-          <h2 className="text-lg font-semibold text-black">Quick Access</h2>
-          <a href="#" className="text-sm text-blackhover:underline">
-            View all
-          </a>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
           {/* Card 1 */}
-          <div className="flex flex-col items-center bg-[#fafafa] border border-gray-200 rounded-xl p-4 shadow-sm">
-            <img src={FileIcon} alt="Excel Icon" className="w-14 h-14 mb-2" />
-            <span className="mt-4 text-xs font-bold">Employe Sheet</span>
+          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
+            <div className="p-3 bg-yellow-100 text-yellow-600 rounded-lg">
+              <IconUsersGroup size={24} />
+            </div>
+            <div className="ml-4">
+              <h2 className="text-xl font-semibold">{totalCompanies}</h2>
+              <p className="text-gray-600 text-xs">Total Pelaku Usaha</p>
+            </div>
           </div>
 
           {/* Card 2 */}
-          <div className="flex flex-col items-center bg-[#fafafa] border border-gray-200 rounded-xl p-4 shadow-sm">
-            <img src={PdfIcon} alt="Excel Icon" className="w-13 h-13 mb-1" />
-            <span className="mt-4 text-xs font-bold">Emloyee History.pdf</span>
+          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
+            <div className="p-3 bg-green-100 text-green-600 rounded-lg">
+              <IconUserCheck size={24} />
+            </div>
+            <div className="ml-4">
+              <h2 className="text-xl font-semibold">53</h2>
+              <p className="text-gray-600 text-xs">Total Pelaku Usaha dengan Submission Berhasil</p>
+            </div>
           </div>
-
           {/* Card 3 */}
-          <div className="flex flex-col items-center bg-[#fafafa] border border-gray-200 rounded-xl p-4 shadow-sm">
-            <img src={DocsIcon} alt="Excel Icon" className="w-12 h-12 mb-2" />
-            <span className="mt-4 text-xs font-bold">Final Changes.doc</span>
+          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
+            <div className="p-3 bg-blue-100 text-blue-600 rounded-lg">
+              <IconUsersGroup size={24} />
+            </div>
+            <div className="ml-4">
+              <h2 className="text-xl font-semibold">{totalSubmissions}</h2>
+              <p className="text-gray-600 text-xs">Total Submission</p>
+            </div>
           </div>
 
-          {/* Card 4 */}
-          <div className="flex flex-col items-center bg-[#fafafa] border border-gray-200 rounded-xl p-4 shadow-sm">
-            <img src={ImageIcon} alt="Excel Icon" className="w-12 h-12 mb-2" />
-            <span className="mt-4 text-xs font-bold">Office Setup.img</span>
+          {/* Card 4  */}
+          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
+            <div className="p-3 bg-green-100 text-green-600 rounded-lg">
+              <IconUserCheck size={24} />
+            </div>
+            <div className="ml-4">
+              <h2 className="text-xl font-semibold">65</h2>
+              <p className="text-gray-600 text-xs">Total Submission Berhasil</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Chart 1 */}
+        <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Status Activities
+            </h3>
           </div>
 
-          {/* Card 5 */}
-          <div className="flex flex-col items-center bg-[#fafafa] border border-gray-200 rounded-xl p-4 shadow-sm">
-            <img src={ExcelIcon} alt="Excel Icon" className="w-12 h-12 mb-2" />
-            <span className="mt-4 text-xs font-bold">Salary Statement.xls</span>
+          <div className="overflow-x-scroll">
+            <div className="min-w-[600px]"> {/* Atur min-width sesuai kebutuhan */}
+              <Chart
+                options={chartOptions}
+                series={chartSeries}
+                type="bar"
+                height={200}
+                width="100%"
+              />
+            </div>
+          </div>
+        </div>
+
+
+        {/* Chart 2 */}
+        <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Status Submissions
+            </h3>
+          </div>
+
+          <div className="overflow-x-scroll">
+            <div className="min-w-[600px]"> {/* Atur min-width sesuai kebutuhan */}
+              <Chart
+                options={chartOptions}
+                series={chartSeries}
+                type="bar"
+                height={200}
+                width="100%"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   );
 };
 

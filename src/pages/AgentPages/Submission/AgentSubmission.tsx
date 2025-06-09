@@ -1,33 +1,102 @@
+// AgentSubmission.tsx
 import { useState } from "react";
 import AddIcon from "../../../../src/icons/add.svg";
 import CardAgentSubmission from "../../../components/card/CardAgentSubmission";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import SubmissionAddModal from "../../../components/modal/SubmissionAddModal";
+import SubmissionFilterModal from "../../../components/modal/FilterModal";
+import { useNavigate } from "react-router-dom";
 
 
 const AgentSubmission = () => {
+  const navigate = useNavigate();
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [refreshTrigger, setRefreshTrigger] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filterAppliedTrigger, setFilterAppliedTrigger] = useState<number>(0);
 
-  const handleOpenAddModal = () => setIsAddModalOpen(true);
+
   const handleCloseAddModal = () => setIsAddModalOpen(false);
+
+  const [filterOptions, setFilterOptions] = useState({
+    name: "",
+    id: "",
+    date: "",
+    status: "",
+  });
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSearchQuery(searchText); // Simpan query pencarian
+  };
 
   return (
     <div>
       <PageBreadcrumb pageTitle="Submissions" />
 
+      <div className="flex justify-between items-center mb-0 sm:mb-3">
+        <div className="flex items-center gap-3">
+          {/* Search Field */}
+          <form onSubmit={handleSearchSubmit} className="mt-3 flex items-center">
+            <label htmlFor="default-search" className="sr-only">Search</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg className="hidden sm:inline w-4 h-4 text-gray-500" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                </svg>
+              </div>
+              <input
+                type="search"
+                id="default-search"
+                className="block w-40 sm:w-48 md:w-64 sm:ps-10 ps-2 text-xs sm:text-sm text-black font-bold border-2 border-gray-400 rounded-l-md sm:rounded-l-lg bg-transparent sm:py-2 py-1 sm:px-3 px-1.5 focus:outline-none"
+                placeholder="Search..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="sm:py-2 py-1 sm:px-3 px-1.5 text-gray-400 text-xs sm:text-sm font-bold border-t-2 border-r-2 border-b-2 border-gray-400 rounded-r-md sm:rounded-r-lg hover:bg-gray-800 hover:text-white">
+              {/* Teks hanya muncul di layar besar */}
+              <span className="hidden sm:inline text-sm font-bold">Search</span>
 
-      <div className="flex justify-end">
+              {/* Icon hanya muncul di layar kecil */}
+              <svg
+                className="sm:hidden w-4 h-4 text-gray-400 hover:text-white"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </button>
+          </form>
+
+          <button
+            className="mt-3 sm:py-2 py-1 sm:px-3 px-1.5 text-gray-400 text-xs sm:text-sm font-bold border-2 border-gray-400 rounded-md sm:rounded-lg hover:bg-gray-800 hover:text-white"
+            onClick={() => setIsFilterModalOpen(true)}>
+            Filter
+          </button>
+        </div>
+
         <button
-          type="button"
-          onClick={handleOpenAddModal}
-          className="mt-3 py-2 px-3 inline-flex items-center gap-x-2 text-sm font-bold border-2 border-[#7EC34B] rounded-lg bg-white text-[#7EC34B] hover:bg-gray-200 hover:text-[#7EC34B] focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+          onClick={() => navigate("/submission/add-submission")}
+          className="mt-3 sm:py-2 py-1 sm:px-3 px-1.5 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 border-[#7EC34B] rounded-lg bg-white text-[#7EC34B] hover:bg-gray-200"
         >
-          <img src={AddIcon} alt="Add Icon" className="w-4 h-4" />
+          <img src={AddIcon} alt="Add Icon" className="w-2.5 sm:w-4 h-2.5 sm:h-4" />
           Add New
         </button>
       </div>
-      <CardAgentSubmission />
+
+      <CardAgentSubmission
+        searchQuery={searchQuery}
+        filters={filterOptions}
+        filterAppliedTrigger={filterAppliedTrigger}
+      />
+
       <SubmissionAddModal
         isOpen={isAddModalOpen}
         onClose={handleCloseAddModal}
@@ -35,8 +104,16 @@ const AgentSubmission = () => {
         setRefreshTrigger={setRefreshTrigger}
       />
 
+      <SubmissionFilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        filters={filterOptions}
+        setFilters={setFilterOptions}
+        onApply={() => {
+          setFilterAppliedTrigger(prev => prev + 1); // Ini akan memicu useEffect di CardAgentSubmission
+        }}
+      />
     </div>
-
   );
 };
 

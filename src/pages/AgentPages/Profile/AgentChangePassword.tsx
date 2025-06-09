@@ -1,18 +1,25 @@
 import { useEffect, useState, useRef } from "react";
+import { isMobile } from "react-device-detect";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import axiosClient from "../../axios-client.js";
-import Notification from "../common/Notification.js";
+import axiosClient from "../../../axios-client.js";
+import Notification from "../../../components/common/Notification.js";
+import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import { useNavigate } from "react-router-dom";
 
-export default function ChangePasswordForm() {
-    const navigate = useNavigate();
-
+export default function AgentChangePassword() {
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [notification, setNotification] = useState<{ message: string; type: "success" | "error" }>({
+    const [notification, setNotification] = useState<{
+        title?: string;
+        message: string;
+        type: "success" | "error";
+    }>({
+        title: "",
         message: "",
         type: "success",
     });
+
 
     const [userDetail, setUserDetail] = useState<{
         name: string;
@@ -25,6 +32,8 @@ export default function ChangePasswordForm() {
 
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
+    const device = isMobile ? "Mobile" : "Desktop";
 
     useEffect(() => {
         const userData = JSON.parse(localStorage.getItem("USER") || "{}");
@@ -67,7 +76,12 @@ export default function ChangePasswordForm() {
         const confirm_password = confirmPasswordRef.current?.value;
 
         if (new_password !== confirm_password) {
-            setNotification({ message: "Password baru dan konfirmasi tidak sama.", type: "error" });
+            setNotification({
+                title: "Validation Error",
+                message: "Password baru dan konfirmasi tidak sama.",
+                type: "error"
+            });
+
             return;
         }
 
@@ -77,25 +91,36 @@ export default function ChangePasswordForm() {
         }
 
         const payload = {
+            name: userDetail.name,
+            email: userDetail.email,
             password: new_password,
             password_confirmation: confirm_password,
+            meta: {
+                gender: userDetail.meta.gender,
+                phone: userDetail.meta.phone,
+            },
+            device,
         };
 
         try {
             await axiosClient.put("/profiles/password", payload);
             const now = new Date();
             const formattedDate = now.toISOString().slice(0, 19).replace("T", " ");
-
             const currentUser = JSON.parse(localStorage.getItem("USER") || "{}");
             const updatedUser = {
                 ...currentUser,
                 password_change_at: formattedDate,
             };
             localStorage.setItem("USER", JSON.stringify(updatedUser));
-            setNotification({ message: "Password berhasil diubah!", type: "success" });
+
+            setNotification({
+                title: "Password Updated",
+                message: "Password berhasil diubah!",
+                type: "success"
+            });
             setTimeout(() => {
-                navigate("/e-learning");
-            }, 1250);
+                navigate("/profile");
+            }, 1500);
         } catch (err: any) {
             const response = err.response;
             if (response?.data?.message) {
@@ -106,52 +131,27 @@ export default function ChangePasswordForm() {
         }
     };
 
-    const handleSkip = async () => {
-        try {
-            const userData = JSON.parse(localStorage.getItem("USER") || "{}");
 
-            if (!userData.id || !userData.role) {
-                setNotification({ message: "Data pengguna tidak ditemukan!", type: "error" });
-                return;
-            }
-
-            const response = await axiosClient.get(`/users/${userData.id}`);
-            const userDetail = response.data;
-
-            const hasTestPassed = !!userDetail.test_passed_at;
-            const hasAcceptedTnc = !!userDetail.tnc_accept_at;
-
-            if (hasTestPassed && hasAcceptedTnc) {
-                navigate("/dashboard");
-            } else {
-                navigate("/e-learning");
-            }
-        } catch (error) {
-            setNotification({ message: "Gagal memeriksa status user.", type: "error" });
-            console.error("Error checking user status:", error);
-        }
-    };
 
     return (
-        <div className="w-full max-w-md p-6 md:p-10 space-y-4">
-            <h2 className="text-4xl font-bold text-[#1975a6] text-left">Change Password</h2>
-            <p className="text-lg font-bold text-gray-400 text-left">We recommend you to change your password</p>
-
-            <form className="space-y-6" onSubmit={onSubmit}>
+        <div>
+            <PageBreadcrumb pageTitle="Change Password" />
+            <form className="flex flex-col px-6 py-6 gap-4" onSubmit={onSubmit}>
                 {/* Password Baru */}
                 <div className="relative">
+                    <label htmlFor="name" className="text-sm">New Password</label>
                     <input
                         id="new_password"
                         ref={passwordRef}
                         type={showPassword ? "text" : "password"}
-                        className="w-full border border-black px-3 py-2"
+                        className="block w-full border border-gray-300 p-2 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         placeholder="Password Baru"
                         required
                     />
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-2/3 -translate-y-1/2 text-gray-500"
                     >
                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
@@ -159,41 +159,32 @@ export default function ChangePasswordForm() {
 
                 {/* Konfirmasi Password Baru */}
                 <div className="relative">
+                    <label htmlFor="name" className="text-sm">Confirm Password</label>
                     <input
                         id="confirm_password"
                         ref={confirmPasswordRef}
                         type={showConfirmPassword ? "text" : "password"}
-                        className="w-full border border-black px-3 py-2"
+                        className="block w-full border border-gray-300 p-2 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         placeholder="Konfirmasi Password Baru"
                         required
                     />
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-2/3 -translate-y-1/2 text-gray-500"
                     >
                         {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                 </div>
-
-                <div className="space-y-1.5">
+                <div className="text-right">
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 font-semibold rounded-lg"
+                        className="bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 text-sm"
                     >
                         Change Password
                     </button>
-
-                    <p className="text-lg font-bold text-gray-400 text-center">or</p>
-
-                    <button
-                        type="button"
-                        className="w-full bg-black text-white py-2 font-semibold rounded-lg"
-                        onClick={handleSkip}
-                    >
-                        Skip
-                    </button>
                 </div>
+
             </form>
 
             {/* Notifikasi */}
