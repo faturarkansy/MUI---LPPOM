@@ -1,4 +1,5 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
+import ProtectedRouteWithWhitelist from "./components/auth/ProtectedRouteWithWhiteList";
 
 import NotFound from "./pages/OtherPage/NotFound";
 import AppLay from "./layout/AppLayout";
@@ -8,13 +9,6 @@ import AuthLayouts from "./pages/AuthPages/AuthPageLayout";
 import SignIn from "./pages/AuthPages/SignIn";
 // import SignUp from "./pages/AuthPages/SignUp";
 
-import MHODashboard from "./pages/MHOPages/Dashboard/MHODashboard";
-import MHOAgent from "./pages/MHOPages/Agent/MHOAgent";
-import MHOSubmission from "./pages/MHOPages/Submission/MHOSubmission";
-import MHOCompany from "./pages/MHOPages/Company/MHOCompany";
-import MHOActivities from "./pages/MHOPages/Activities/MHOActivities";
-// import MHOLearningModule from "./pages/MHOPages/LMS/MHOLearningModule";
-
 import AgentDashboard from "./pages/AgentPages/Dashboard/AgentDashboard";
 import AgentAgreement from "./pages/AgentPages/StartingKit/AgentAgreement";
 import AgentChangePassword from "./pages/AuthPages/ChangePassword";
@@ -23,6 +17,7 @@ import AgentCompany from "./pages/AgentPages/Submission/AgentCompany";
 import AgentSubmission from "./pages/AgentPages/Submission/AgentSubmission";
 import AgentAddSubmission from "./pages/AgentPages/Submission/AgentAddSubmission";
 import AgentDetailSubmission from "./pages/AgentPages/Submission/AgentDetailSubmission";
+import AgentEditSubmission from "./pages/AgentPages/Submission/AgentEditSubmission";
 import AgentAddActivity from "./pages/AgentPages/Submission/AgentAddActivity";
 
 import AgentProfile from "./pages/AgentPages/Profile/AgentProfile";
@@ -58,46 +53,6 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/mho",
-    element: (
-      <ProtectedRoute allowedRoles={["mho"]}>
-        <AppLay />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        path: "",
-        element: <Navigate to="dashboard" />,
-      },
-      {
-        path: "dashboard",
-        element: <MHODashboard />,
-      },
-      {
-        path: "agent",
-        element: <MHOAgent />,
-      },
-      {
-        path: "submission",
-        element: <MHOSubmission />,
-      },
-      {
-        path: "business-actor",
-        element: <MHOCompany />,
-      },
-      {
-        path: "activities",
-        element: <MHOActivities />,
-      },
-
-      // {
-      //   path: "learning-module",
-      //   element: <MHOLearningModule />,
-      // },
-    ],
-  },
-
-  {
     path: "agreement",
     element: (
       <ProtectedRoute allowedRoles={["agent"]}>
@@ -119,7 +74,10 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <ProtectedRoute allowedRoles={["agent"]}>
-        <AppLay />
+        <ProtectedRouteWithWhitelist>
+          <AppLay />
+        </ProtectedRouteWithWhitelist>
+
       </ProtectedRoute>
     ),
     children: [
@@ -147,7 +105,10 @@ const router = createBrowserRouter([
         path: "submission/detail-submission/add-activity",
         element: <AgentAddActivity />,
       },
-
+      {
+        path: "submission/detail-submission/edit-submission",
+        element: <AgentEditSubmission />,
+      },
       {
         path: "profile",
         element: <AgentProfile />,

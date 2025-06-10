@@ -92,7 +92,7 @@ const AgentProfile: React.FC = () => {
             <div className="pb-6 px-6 mt-5">
                 <button
                     onClick={signOutHandler}
-                    className="w-full py-2 bg-black text-white rounded-md font-semibold text-sm hover:bg-gray-800 transition"
+                    className="w-full sm:py-2 py-1.5 sm:px-3 px-2 bg-black text-white rounded-md font-semibold text-xs sm:text-sm border-2 border-black hover:bg-gray-400 hover:text-black transition"
                 >
                     Logout
                 </button>

@@ -29,7 +29,7 @@ const Notification: React.FC<NotificationProps> = ({
     if (!message) return null;
 
     const baseStyle =
-        "fixed top-3 right-4 z-[999999] w-fit max-w-sm flex items-start gap-3 px-4 py-3 rounded-lg shadow-md";
+        "fixed top-3 sm:top-6 right-4 sm:right-6 z-[999999] w-fit max-w-sm flex items-start gap-3 px-4 py-3 rounded-lg shadow-md";
 
     const successStyle =
         "border border-green-200 bg-white text-green-800";

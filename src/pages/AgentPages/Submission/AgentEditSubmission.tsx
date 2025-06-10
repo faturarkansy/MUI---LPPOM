@@ -2,7 +2,9 @@ import React, { useState, useEffect, FormEvent } from "react";
 import axiosClient from "../../../axios-client";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import Notification from "../../../components/common/Notification.js";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface CompanyFormData {
     user_id: string;
@@ -28,6 +30,7 @@ interface CompanyFormData {
     };
 }
 
+
 const initCompanyFormData: CompanyFormData = {
     user_id: "",
     nib: "",
@@ -52,7 +55,8 @@ const initCompanyFormData: CompanyFormData = {
     },
 };
 
-const AgentAddSubmission: React.FC = () => {
+const AgentEditSubmission: React.FC = () => {
+    // const todayDate = new Date().toISOString().split("T")[0];
     const [provinces, setProvinces] = useState<any[]>([]);
     const [regencies, setRegencies] = useState<any[]>([]);
     const [districts, setDistricts] = useState<any[]>([]);
@@ -63,6 +67,13 @@ const AgentAddSubmission: React.FC = () => {
     const navigate = useNavigate();
     const [productTypes, setProductTypes] = useState<any[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const location = useLocation();
+    const submissionId = location.state?.id;
+
+    const { allowed } = location.state || {};
+    if (!allowed) {
+        return <Navigate to="/dashboard" replace />;
+    }
     const [notification, setNotification] = useState<{
         title?: string;
         message: string;
@@ -79,7 +90,7 @@ const AgentAddSubmission: React.FC = () => {
         business_scale_id: "Skala Usaha",
         product_type_id: "Jenis Produk",
         type: "Tipe Perusahaan",
-        date: "Tanggal Berdiri",
+        date: "Tanggal Pengajuan",
         facility: "Fasilitas Produksi",
         product: "Produk",
         province_id: "Provinsi",
@@ -94,6 +105,50 @@ const AgentAddSubmission: React.FC = () => {
         pic_email: "Email PIC",
     };
 
+    //fetch Submission Data
+    useEffect(() => {
+        const fetchSubmissionData = async () => {
+            if (submissionId) {
+                try {
+                    const response = await axiosClient.get(`/submissions/${submissionId}`);
+                    const data = response.data;
+
+                    setFormData({
+                        user_id: data.user_id || "",
+                        nib: data.company.nib || "",
+                        name: data.company.name || "",
+                        business_scale_id: data.business_scale_id || "",
+                        product_type_id: data.product_type_id || "",
+                        type: data.type || "",
+                        date: data.date || "",
+                        facility: data.facility || "",
+                        product: data.product || "",
+                        province_id: data.province_id || "",
+                        regency_id: data.regency_id || "",
+                        district_id: data.district_id || "",
+                        village_id: data.village_id || "",
+                        meta: {
+                            address: data.company.attr.address || "",
+                            phone: data.company.attr.phone || "",
+                            email: data.company.attr.email || "",
+                            pic_name: data.company.attr.pic_name || "",
+                            pic_phone: data.company.attr.pic_phone || "",
+                            pic_email: data.company.attr.pic_email || "",
+                        },
+                    });
+                } catch (error) {
+                    console.error("Gagal memuat data submission:", error);
+                    setNotification({
+                        title: "Error",
+                        message: "Gagal memuat data submission.",
+                        type: "error",
+                    });
+                }
+            }
+        };
+
+        fetchSubmissionData();
+    }, [submissionId]);
 
     //fetch General & Provinsi
     useEffect(() => {
@@ -177,6 +232,8 @@ const AgentAddSubmission: React.FC = () => {
         fetchVillagesByDistrict();
     }, [formData.district_id]);
 
+
+
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
@@ -232,10 +289,10 @@ const AgentAddSubmission: React.FC = () => {
     const handleFormSubmit = async () => {
         setIsLoading(true);
         try {
-            await axiosClient.post(`/submissions`, formData);
+            await axiosClient.put(`/submissions/${submissionId}`, formData);
             setNotification({
                 title: "Success",
-                message: "Berhasil menambahkan data submission.",
+                message: "Berhasil mengupdate data submission.",
                 type: "success",
             });
 
@@ -264,7 +321,7 @@ const AgentAddSubmission: React.FC = () => {
 
     return (
         <div>
-            <PageBreadcrumb pageTitle="Add Submission" />
+            <PageBreadcrumb pageTitle="Edit Submission" />
             <form onSubmit={handleSubmit} className="space-y-3 mt-3 px-2">
                 <div>
                     <label htmlFor="nib" className="text-sm">NIB Perusahaan</label>
@@ -361,21 +418,29 @@ const AgentAddSubmission: React.FC = () => {
                         <p className="text-red-500 text-sm">{errors.type}</p>
                     )}
                 </div>
+
                 <div>
-                    <label htmlFor="date" className="text-sm">
+                    <label htmlFor="date" className="text-sm block mb-0.5">
                         Tanggal Pengajuan
                     </label>
-                    <input
+                    <DatePicker
                         id="date"
-                        value={formData.date}
-                        onChange={handleInputChange}
-                        type="date"
-                        className="mt-1 block w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        selected={formData.date ? new Date(formData.date) : null}
+                        onChange={(date: Date | null) => {
+                            setFormData({
+                                ...formData,
+                                date: date?.toISOString().split("T")[0] || "",
+                            });
+                        }}
+                        dateFormat="dd/MM/yyyy"
+                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        wrapperClassName="w-full"
                     />
                     {errors.date && (
                         <p className="text-red-500 text-sm">{errors.date}</p>
                     )}
                 </div>
+
                 <div>
                     <label htmlFor="facility" className="text-sm">
                         Jumlah Fasilitas Produksi
@@ -424,11 +489,6 @@ const AgentAddSubmission: React.FC = () => {
                                 {province.name}
                             </option>
                         ))}
-                        {/* {locations.map((location: any) => (
-                            <option key={location.id} value={location.id}>
-                                {location.name}
-                            </option>
-                        ))} */}
                     </select>
                     {errors.province_id && (
                         <p className="text-red-500 text-sm">{errors.province_id}</p>
@@ -620,4 +680,4 @@ const AgentAddSubmission: React.FC = () => {
     );
 };
 
-export default AgentAddSubmission;
+export default AgentEditSubmission;

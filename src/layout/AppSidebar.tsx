@@ -3,16 +3,11 @@ import { Link, useLocation } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import Profile from "../icons/profile-icon-white.svg";
 import {
-  BoxIcon,
   ChevronRightIcon,
   HorizontaLDots,
-  ListIcon,
-  UserCircleIcon,
   UserIcon,
-  UsersIcon,
   BuildingIcon,
   MuiIcon,
-  HomeIcon,
   BooksIcon,
   ListDetailIcon,
 } from "../icons";
@@ -26,43 +21,6 @@ type NavItem = {
 
 // Define navigation items for different roles
 const roleNavigations: Record<string, NavItem[]> = {
-  mho: [
-    // {
-    //   icon: <HomeIcon />,
-    //   name: "Dashboard",
-    //   path: "/mho/dashboard",
-    // },
-    {
-      icon: <UsersIcon />,
-      name: "Agent Management",
-      path: "/mho/agent",
-    },
-    {
-      icon: <BuildingIcon />,
-      name: "Pelaku Usaha",
-      path: "/mho/business-actor",
-    },
-    {
-      icon: <ListDetailIcon />,
-      name: "Submission",
-      path: "/mho/submission",
-    },
-    {
-      icon: <ListIcon />,
-      name: "Activities",
-      path: "/mho/activities",
-    },
-    {
-      icon: <BooksIcon />,
-      name: "LMS",
-      subItems: [
-        {
-          name: "Modul Pembelajaran",
-          path: "/mho/learning-module",
-        },
-      ],
-    },
-  ],
   agent: [
     {
       icon: <BuildingIcon />,

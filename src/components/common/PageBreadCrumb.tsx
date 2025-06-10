@@ -50,7 +50,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
           {breadcrumbItems.map((item, index) => (
             <li key={index} className="inline-flex items-center text-sm">
               {index > 0 && (
-                <span className="mx-2 flex items-center">
+                <span className="mx-0.5 flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"

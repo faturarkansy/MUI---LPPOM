@@ -144,7 +144,7 @@ export default function AgentChangePassword() {
                         id="new_password"
                         ref={passwordRef}
                         type={showPassword ? "text" : "password"}
-                        className="block w-full border border-gray-300 p-2 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         placeholder="Password Baru"
                         required
                     />
@@ -164,7 +164,7 @@ export default function AgentChangePassword() {
                         id="confirm_password"
                         ref={confirmPasswordRef}
                         type={showConfirmPassword ? "text" : "password"}
-                        className="block w-full border border-gray-300 p-2 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="block w-full border border-black p-2  rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         placeholder="Konfirmasi Password Baru"
                         required
                     />
@@ -179,7 +179,7 @@ export default function AgentChangePassword() {
                 <div className="text-right">
                     <button
                         type="submit"
-                        className="bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 text-sm"
+                        className="sm:py-2 py-1.5 sm:px-3 px-2 text-xs sm:text-sm font-semibold bg-black border-2 border-black text-white rounded-lg hover:bg-gray-400 hover:text-black"
                     >
                         Change Password
                     </button>

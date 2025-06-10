@@ -43,26 +43,26 @@ const AgentSubmission = () => {
             <label htmlFor="default-search" className="sr-only">Search</label>
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg className="hidden sm:inline w-4 h-4 text-gray-500" fill="none" viewBox="0 0 20 20">
+                <svg className="hidden sm:inline w-4 h-4 text-black" fill="none" viewBox="0 0 20 20">
                   <path stroke="currentColor" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                 </svg>
               </div>
               <input
                 type="search"
                 id="default-search"
-                className="block w-40 sm:w-48 md:w-64 sm:ps-10 ps-2 text-xs sm:text-sm text-black font-bold border-2 border-gray-400 rounded-l-md sm:rounded-l-lg bg-transparent sm:py-2 py-1 sm:px-3 px-1.5 focus:outline-none"
+                className="block w-40 sm:w-48 md:w-64 sm:ps-10 ps-2 text-xs sm:text-sm text-black font-bold border-2 border-black rounded-l-md sm:rounded-l-lg bg-transparent sm:py-2 py-1.5 sm:px-3 px-2 focus:outline-none"
                 placeholder="Search..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
               />
             </div>
-            <button type="submit" className="sm:py-2 py-1 sm:px-3 px-1.5 text-gray-400 text-xs sm:text-sm font-bold border-t-2 border-r-2 border-b-2 border-gray-400 rounded-r-md sm:rounded-r-lg hover:bg-gray-800 hover:text-white">
+            <button type="submit" className="sm:py-2 py-1.5 sm:px-3 px-2 bg-black text-white text-xs sm:text-sm font-bold border-t-2 border-r-2 border-b-2 border-black rounded-r-md sm:rounded-r-lg hover:bg-gray-400 hover:text-black">
               {/* Teks hanya muncul di layar besar */}
-              <span className="hidden sm:inline text-sm font-bold">Search</span>
+              <span className="hidden sm:inline text-sm font-bold ">Search</span>
 
               {/* Icon hanya muncul di layar kecil */}
               <svg
-                className="sm:hidden w-4 h-4 text-gray-400 hover:text-white"
+                className="sm:hidden w-4 h-4 text-white hover:text-white"
                 fill="none"
                 viewBox="0 0 20 20"
               >
@@ -76,7 +76,7 @@ const AgentSubmission = () => {
           </form>
 
           <button
-            className="mt-3 sm:py-2 py-1 sm:px-3 px-1.5 text-gray-400 text-xs sm:text-sm font-bold border-2 border-gray-400 rounded-md sm:rounded-lg hover:bg-gray-800 hover:text-white"
+            className="mt-3 sm:py-2 py-1.5 sm:px-3 px-2 bg-black text-white text-xs sm:text-sm font-bold border-2 border-black rounded-md sm:rounded-lg hover:bg-gray-400 hover:text-black"
             onClick={() => setIsFilterModalOpen(true)}>
             Filter
           </button>
@@ -84,9 +84,9 @@ const AgentSubmission = () => {
 
         <button
           onClick={() => navigate("/submission/add-submission")}
-          className="mt-3 sm:py-2 py-1 sm:px-3 px-1.5 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 border-[#7EC34B] rounded-lg bg-white text-[#7EC34B] hover:bg-gray-200"
+          className="mt-3 sm:py-2 py-1.5 sm:px-3 px-2 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 border-[#7EC34B] rounded-lg bg-white text-[#7EC34B] hover:bg-gray-200"
         >
-          <img src={AddIcon} alt="Add Icon" className="w-2.5 sm:w-4 h-2.5 sm:h-4" />
+          <img src={AddIcon} alt="Add Icon" className="w-3 sm:w-4 h-3 sm:h-4" />
           Add New
         </button>
       </div>

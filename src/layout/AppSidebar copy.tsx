@@ -2,15 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import {
-  BoxIcon,
   ChevronRightIcon,
   HorizontaLDots,
-  ListIcon,
-  UserCircleIcon,
-  UsersIcon,
   BuildingIcon,
   MuiIcon,
-  HomeIcon,
   BooksIcon,
   ListDetailIcon,
 } from "../icons";
@@ -24,102 +19,7 @@ type NavItem = {
 
 // Define navigation items for different roles
 const roleNavigations: Record<string, NavItem[]> = {
-  admin: [
-    {
-      icon: <HomeIcon />,
-      name: "Dashboard",
-      path: "/admin/dashboard",
-    },
-    {
-      icon: <UserCircleIcon />,
-      name: "User Management",
-      subItems: [{ name: "User", path: "/admin/user", pro: false }],
-    },
-    {
-      icon: <BoxIcon />,
-      name: "Marketing Kits",
-      subItems: [
-        { name: "Media", path: "/admin/media", pro: false },
-        { name: "FAQ", path: "/admin/faq", pro: false },
-      ],
-    },
-    {
-      name: "LMS Setting",
-      icon: <ListIcon />,
-      subItems: [
-        { name: "Manage Module", path: "/admin/learning-module", pro: false },
-        { name: "Manage Post Test", path: "/admin/post-test", pro: false },
-      ],
-    },
-  ],
-  manager: [
-    {
-      icon: <HomeIcon />,
-      name: "Dashboard",
-      path: "manager/dashboard",
-    },
-  ],
-  ["team-leader"]: [
-    {
-      icon: <UserCircleIcon />,
-      name: "Dashboard",
-      path: "/mho/dashboard",
-    },
-    {
-      icon: <BoxIcon />,
-      name: "Pelaku Usaha",
-      subItems: [
-        {
-          name: "Pelaku Usaha",
-          path: "/tl/company/status",
-        },
-        { name: "Submission", path: "/tl/company/submission" },
-      ],
-    },
-  ],
-  mho: [
-    // {
-    //   icon: <HomeIcon />,
-    //   name: "Dashboard",
-    //   path: "/mho/dashboard",
-    // },
-    {
-      icon: <UsersIcon />,
-      name: "Agent Management",
-      path: "/mho/agent",
-    },
-    {
-      icon: <BuildingIcon />,
-      name: "Pelaku Usaha",
-      path: "/mho/business-actor",
-    },
-    {
-      icon: <ListDetailIcon />,
-      name: "Submission",
-      path: "/mho/submission",
-    },
-    {
-      icon: <ListIcon />,
-      name: "Activities",
-      path: "/mho/activities",
-    },
-    {
-      icon: <BooksIcon />,
-      name: "LMS",
-      subItems: [
-        {
-          name: "Modul Pembelajaran",
-          path: "/mho/learning-module",
-        },
-      ],
-    },
-  ],
   agent: [
-    // {
-    //   icon: <UserCircleIcon />,
-    //   name: "Dashboard",
-    //   path: "/agent/dashboard",
-    // },
     {
       icon: <BuildingIcon />,
       name: "Activities",
@@ -135,23 +35,6 @@ const roleNavigations: Record<string, NavItem[]> = {
       name: "E-Learning",
       path: "/agent/e-learning",
     },
-
-    // {
-    //   icon: <BoxIcon />,
-    //   name: "Marketing",
-    //   subItems: [
-    //     { name: "Media", path: "/agent/media", pro: false },
-    //     { name: "FAQ", path: "/agent/faq", pro: false },
-    //   ],
-    // },
-    // {
-    //   name: "LMS",
-    //   icon: <ListIcon />,
-    //   subItems: [
-    //     { name: "Manage Module", path: "/agent/learning-module", pro: false },
-    //     { name: "Manage Post Test", path: "/agent/post-test", pro: false },
-    //   ],
-    // },
   ],
 };
 
@@ -179,13 +62,7 @@ const AppSidebar: React.FC<SidebarProps> = () => {
     [location.pathname]
   );
 
-  // const fallbackAgentMenu = [
-  //   {
-  //     icon: <BuildingIcon />,
-  //     name: "E-Learning",
-  //     path: "/agent/e-learning",
-  //   },
-  // ];
+
 
   useEffect(() => {
     let submenuMatched = false;

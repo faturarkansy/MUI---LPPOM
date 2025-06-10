@@ -9,6 +9,7 @@ interface Submission {
     id: number;
     status: {
         status: string;
+        edit: boolean;
     };
     company: {
         name: string;
@@ -31,7 +32,7 @@ interface Activity {
     activity: string;
     response: string;
     date: string;
-    status: string;
+    status: number;
 }
 
 const AgentDetailSubmission = () => {
@@ -41,6 +42,13 @@ const AgentDetailSubmission = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const submissionId = location.state?.id;
+    const statusMap: Record<number, string> = {
+        1: "Prospects",
+        2: "Approaching",
+        3: "Presenting",
+        4: "Offering",
+        5: "Closing",
+    };
 
     useEffect(() => {
         if (!submissionId) {
@@ -51,7 +59,11 @@ const AgentDetailSubmission = () => {
         const fetchSubmission = async () => {
             try {
                 const res = await axiosClient.get(`/submissions/${submissionId}`);
-                setItem(res.data);
+                console.log(res.data);
+                setItem({
+                    ...res.data,
+                    activities: res.data.activity,
+                });
             } catch (error) {
                 console.error("Failed to fetch submission detail:", error);
             } finally {
@@ -116,12 +128,25 @@ const AgentDetailSubmission = () => {
                 </div>
                 <div>
                     <button
-                        className="sm:py-2 py-1 sm:px-3 px-1.5 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 border-[#7EC34B] rounded-lg bg-white text-[#7EC34B] hover:bg-gray-200"
-                        onClick={() => navigate("/submission/detail-submission/edit-submission")}
+                        disabled={!item.status.edit}
+                        className={`sm:py-2 py-1 sm:px-3 px-1.5 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 rounded-lg 
+                            ${item.status.edit
+                                ? "border-[#7EC34B] text-[#7EC34B] bg-white hover:bg-gray-200"
+                                : "border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed"
+                            }`}
+                        onClick={() => {
+                            if (item.status.edit) {
+                                sessionStorage.setItem("submissionId", item.id.toString());
+                                navigate("/submission/detail-submission/edit-submission", {
+                                    state: { id: item.id, allowed: true, },
+                                });
+                            }
+                        }}
                     >
                         <PlusCircle size={20} />
                         Edit Submission
                     </button>
+
                 </div>
 
             </div>
@@ -157,29 +182,47 @@ const AgentDetailSubmission = () => {
 
             {/* Activity Section */}
             <div className="mt-4 mb-14">
-                <h3 className="text-lg px-2 font-semibold border-b-1 border-[#1874A5] pb-1 mb-2 text-[#1874A5]">Activity</h3>
+                <h3 className="text-lg px-2 font-semibold border-b-2 border-[#1874A5] pb-1 mb-3 text-[#1874A5]">Activity</h3>
 
                 {item.activities?.length > 0 ? (
                     item.activities.map((activity, idx) => (
-                        <div key={idx} className="border rounded-lg p-4 mb-3">
-                            <div className="flex justify-between">
-                                <div className="font-semibold">{activity.activity}</div>
-                                <span className="text-xs bg-gray-200 px-2 py-0.5 rounded">
-                                    {activity.status}
-                                </span>
+                        <div key={idx} className="border border-gray-400 rounded-lg py-3 mb-3">
+                            <div className="flex justify-between px-3 pb-1">
+                                <div>
+                                    <div className="font-semibold">{activity.activity}</div>
+                                    <div className="text-xs text-gray-500">
+                                        {new Date(activity.date).toLocaleDateString("id-ID", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                        })}
+                                    </div>
+
+                                </div>
+                                <div>
+                                    <span className="text-xs bg-gray-300 px-2 py-1 rounded">
+                                        {statusMap[activity.status] || "Unknown"}
+                                    </span>
+                                </div>
+
                             </div>
-                            <div className="text-sm text-gray-500">{activity.date}</div>
-                            <div className="mt-2">{activity.response}</div>
+                            <div className="mt-2 border-t-1 border-black px-3 pt-3">Respon : {activity.response}</div>
                         </div>
                     ))
                 ) : (
                     <div className="text-sm text-gray-500 px-2">Belum ada aktivitas.</div>
                 )}
 
+
                 <button
                     className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 gap-2  shadow-lg  transition z-50
                     mt-3 sm:py-2 py-1 sm:px-3 px-1.5 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 border-[#7EC34B] rounded-lg bg-white text-[#7EC34B] hover:bg-gray-200"
-                    onClick={() => navigate("/submission/detail-submission/add-activity")}
+                    onClick={() => {
+                        sessionStorage.setItem("submissionId", item.id.toString()); // simpan ID sementara
+                        navigate("/submission/detail-submission/add-activity", {
+                            state: { id: item.id }, // tetap kirim via state
+                        });
+                    }}
                 >
                     <PlusCircle size={20} />
                     Add Activity

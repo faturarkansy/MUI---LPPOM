@@ -15,6 +15,8 @@ const AgentDashboard = () => {
   const [chartOptions, setChartOptions] = useState({});
   const [totalSubmissions, setTotalSubmissions] = useState(0);
   const [totalCompanies, setTotalCompanies] = useState(0);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const getResponsiveFontSize = () => {
     if (window.innerWidth < 640) {
@@ -23,6 +25,33 @@ const AgentDashboard = () => {
       return '14px'; // Desktop
     }
   };
+
+  useEffect(() => {
+    const now = new Date();
+
+    // Tahun dan bulan saat ini
+    const year = now.getFullYear();
+    const month = now.getMonth(); // 0-based (0 = Jan, 11 = Dec)
+
+    // Hitung jumlah hari dalam bulan ini
+    const daysInMonth = new Date(year, month + 1, 0).getDate(); // 0 berarti hari terakhir dari bulan sebelumnya
+
+    // Kalau jumlah hari > 1, mulai dari hari ke-2, kalau tidak mulai dari hari pertama
+    const startDay = daysInMonth > 1 ? 2 : 1;
+    const firstDayOfMonth = new Date(year, month, startDay);
+    const formattedFirstDay = firstDayOfMonth.toISOString().split("T")[0];
+
+    const formattedToday = now.toISOString().split("T")[0];
+
+    console.log("Jumlah hari di bulan ini:", daysInMonth);
+    console.log("Tanggal awal (startDate):", formattedFirstDay);
+    console.log("Tanggal akhir (today):", formattedToday);
+
+    setStartDate(formattedFirstDay);
+    setEndDate(formattedToday);
+  }, []);
+
+
 
   useEffect(() => {
     const fetchTotalSubmissions = async () => {
@@ -113,16 +142,16 @@ const AgentDashboard = () => {
         <div className="flex items-center space-x-2 mt-3">
           <input
             type="date"
-            className="border border-black px-2 py-1 text-xs rounded w-fit min-w-[5rem]"
-            defaultValue="2025-06-01"
+            className="border-black border-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-fit min-w-[5rem]"
+            value={startDate}
           />
           <span className="text-gray-600">-</span>
           <input
             type="date"
-            className="border border-black px-2 py-1 text-xs rounded w-fit min-w-[5rem]"
-            defaultValue="2025-06-05"
+            className="border-black border-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-fit min-w-[5rem]"
+            value={endDate}
           />
-          <button className="bg-black text-white px-3 py-1 text-xs rounded w-fit">
+          <button className="bg-black text-white sm:py-2 py-1.5 sm:px-3 px-2 ml-1 text-xs sm:text-sm border-black border-2 rounded-lg w-fit hover:bg-gray-400 hover:text-black">
             Filter
           </button>
         </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../../axios-client";
+import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 
 type QuestionType = {
   id: number;
@@ -82,54 +83,66 @@ const AgentPostTest = () => {
 
   return (
     <div>
-      <div className="w-full h-20 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-end justify-start px-6 py-3 mb-3 rounded-3xl text-white">
-        <h1 className="font-normal text-3xl">Post Test</h1>
-      </div>
+      <PageBreadcrumb pageTitle="Post Test" />
 
-      {questions.map((q, index) => (
-        <div
-          key={q.id}
-          className="w-full max-w-full bg-white border border-gray-200 rounded-xl shadow-sm my-4 p-4"
-        >
-          <h3 className="font-semibold mb-2 text-left">
-            {index + 1}. {q.ask_text}
-          </h3>
+      {questions.length === 0 ? (
 
-          {q.ask_image && (
-            <img
-              src={q.ask_image}
-              alt="Question Illustration"
-              className="mb-2 max-w-full rounded"
-            />
-          )}
-
-          <div className="grid grid-cols-2 gap-4">
-            {["a", "b", "c", "d", "e"].map((key) => (
-              <label key={key} className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name={`question-${q.id}`}
-                  value={q[key as keyof QuestionType]}
-                  checked={answers[q.id] === key}
-                  onChange={() => handleAnswerChange(q.id, key)}
-                  className="form-radio text-blue-500"
-                />
-                <span>{q[key as keyof QuestionType]}</span>
-              </label>
-            ))}
-          </div>
+        <div className="text-center text-gray-500 text-sm font-medium mt-20">
+          Upps Soal Belum Tersedia
         </div>
-      ))}
+      ) : (
+        <>
+          {questions.map((q, index) => (
+            <div
+              key={q.id}
+              className="w-full max-w-full bg-white border border-gray-200 rounded-xl shadow-sm my-4 p-4"
+            >
+              <h3 className="font-semibold mb-2 text-left">
+                {index + 1}. {q.ask_text}
+              </h3>
+
+              {q.ask_image && (
+                <img
+                  src={q.ask_image}
+                  alt="Question Illustration"
+                  className="mb-2 max-w-full rounded"
+                />
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                {["a", "b", "c", "d", "e"].map((key) => (
+                  <label
+                    key={key}
+                    className="flex items-center space-x-2 cursor-pointer"
+                  >
+                    <input
+                      type="radio"
+                      name={`question-${q.id}`}
+                      value={q[key as keyof QuestionType]}
+                      checked={answers[q.id] === key}
+                      onChange={() => handleAnswerChange(q.id, key)}
+                      className="form-radio text-blue-500"
+                    />
+                    <span>{q[key as keyof QuestionType]}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
 
       <div className="mt-6 text-right">
         <button
           onClick={handleSubmit}
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-400 hover:text-black"
+          className="sm:py-2 py-1.5 sm:px-3 px-2 bg-black text-white text-xs sm:text-sm font-bold border-2 border-black rounded-md sm:rounded-lg hover:bg-gray-400 hover:text-black"
           disabled={nextExamId === null}
         >
           Submit
         </button>
       </div>
+
     </div>
   );
 };

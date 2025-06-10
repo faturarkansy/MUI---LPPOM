@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../../axios-client";
+import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 
 interface ExamResult {
   id: number;
@@ -35,8 +36,22 @@ const AgentResultPostTest = () => {
             current.id > latest.id ? current : latest
           );
 
-          setIsPassed(latestExam.status === true);
+          const passed = latestExam.status === true;
+          setIsPassed(passed);
           setPoint(latestExam.point);
+
+          // Jika lulus, perbarui test_passed_at di localStorage
+          if (passed) {
+            const now = new Date();
+            const formattedDate = now.toISOString().slice(0, 19).replace("T", " "); // Format YYYY-MM-DD HH:mm:ss
+
+            const updatedUser = {
+              ...user,
+              test_passed_at: formattedDate,
+            };
+
+            localStorage.setItem("USER", JSON.stringify(updatedUser));
+          }
         }
       } catch (error) {
         console.error("Gagal mengambil data hasil post test:", error);
@@ -55,27 +70,30 @@ const AgentResultPostTest = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
-      <div className="bg-white rounded-lg shadow-md p-8 text-center max-w-md w-full">
-        <h1 className="text-3xl font-bold mb-4">
-          {isPassed ? "Selamat!" : "Maaf!"}
-        </h1>
-        <p className="text-lg mb-2">
-          {isPassed
-            ? "Anda telah lulus Post-Test."
-            : "Anda belum lulus Post-Test."}
-        </p>
-        <p className="text-sm text-gray-600 mb-6">
-          Grade: {point} poin
-        </p>
-        <button
-          onClick={() =>
-            navigate(isPassed ? "/dashboard" : "/e-learning")
-          }
-          className="px-6 py-2 rounded-md bg-black text-white rounded hover:bg-gray-400"
-        >
-          {isPassed ? "Ke Dashboard" : "Kembali ke E-Learning"}
-        </button>
+    <div>
+      <PageBreadcrumb pageTitle="Result Post Test" />
+      <div className="flex flex-col items-center justify-center mt-3">
+        <div className="bg-white rounded-lg shadow-md p-8 text-center max-w-md w-full">
+          <h1 className="text-3xl font-bold mb-4">
+            {isPassed ? "Selamat!" : "Maaf!"}
+          </h1>
+          <p className="text-lg mb-2">
+            {isPassed
+              ? "Anda telah lulus Post-Test."
+              : "Anda belum lulus Post-Test."}
+          </p>
+          <p className="text-sm text-gray-600 mb-6">
+            Grade: {point} poin
+          </p>
+          <button
+            onClick={() =>
+              navigate(isPassed ? "/dashboard" : "/e-learning")
+            }
+            className="bg-black border-2 border-black text-white text-xs sm:text-sm font-bold sm:py-2 py-1.5 sm:px-3 px-2 rounded-md shadow hover:bg-gray-400 hover:text-black"
+          >
+            {isPassed ? "Ke Dashboard" : "Kembali ke E-Learning"}
+          </button>
+        </div>
       </div>
     </div>
   );

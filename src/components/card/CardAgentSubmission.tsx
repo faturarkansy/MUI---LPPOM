@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../axios-client";
 import axios from "axios";
-import SubmissionDetailModal from "../modal/SubmissionDetailModal";
 import { useNavigate } from "react-router-dom";
 
 interface Submission {
@@ -29,15 +28,6 @@ interface Props {
 const CardAgentSubmission: React.FC<Props> = ({ searchQuery, filters, filterAppliedTrigger }) => {
     const navigate = useNavigate();
     const [dataPelakuUsaha, setDataPelakuUsaha] = useState<Submission[]>([]);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
-    const [selectedSubmissionId, setSelectedSubmissionId] = useState<number | null>(null);
-
-    const handleOpenDetailModal = (id: number) => {
-        setSelectedSubmissionId(id);
-        setIsDetailModalOpen(true);
-    };
-
-    const handleCloseDetailModal = () => setIsDetailModalOpen(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -128,7 +118,7 @@ const CardAgentSubmission: React.FC<Props> = ({ searchQuery, filters, filterAppl
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={() => navigate("/submission/detail-submission", { state: { id: item.id } })}
-                                            className="inline-block px-4 py-1.5 text-xs font-semibold bg-black text-white rounded-lg"
+                                            className="inline-block sm:py-2 py-1.5 sm:px-3 px-2 text-xs sm:text-sm font-semibold bg-black border-2 border-black text-white rounded-lg hover:bg-gray-400 hover:text-black"
                                         >
                                             Detail
                                         </button>
@@ -165,7 +155,7 @@ const CardAgentSubmission: React.FC<Props> = ({ searchQuery, filters, filterAppl
                             <button
                                 type="button"
                                 onClick={() => navigate("/submission/detail-submission", { state: { id: item.id } })}
-                                className="inline-block px-4 py-1.5 text-xs font-semibold bg-black text-white rounded-lg"
+                                className="inline-block sm:py-2 py-1.5 sm:px-3 px-2 text-xs sm:text-sm font-semibold bg-black border-2 border-black text-white rounded-lg hover:bg-gray-400 hover:text-black"
                             >
                                 Detail
                             </button>
@@ -173,11 +163,6 @@ const CardAgentSubmission: React.FC<Props> = ({ searchQuery, filters, filterAppl
                     </div>
                 ))}
             </div>
-            <SubmissionDetailModal
-                isOpen={isDetailModalOpen}
-                onClose={handleCloseDetailModal}
-                submissionId={selectedSubmissionId}
-            />
         </div>
     );
 };
