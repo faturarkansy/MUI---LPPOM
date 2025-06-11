@@ -19,7 +19,18 @@ interface Submission {
         village: { name: string };
         business_scale: { name: string };
         nib: number;
+        attr: {
+            address: string;
+            phone: string;
+            email: string;
+            pic_name: string;
+            pic_phone: string;
+            pic_email: string;
+        };
     };
+    user: {
+        name: string;
+    }
     product_type: { type: string };
     type: string;
     date: string;
@@ -32,7 +43,9 @@ interface Activity {
     activity: string;
     response: string;
     date: string;
-    status: number;
+    status: {
+        status: string;
+    };
 }
 
 const AgentDetailSubmission = () => {
@@ -42,14 +55,6 @@ const AgentDetailSubmission = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const submissionId = location.state?.id;
-    const statusMap: Record<number, string> = {
-        1: "Prospects",
-        2: "Approaching",
-        3: "Presenting",
-        4: "Offering",
-        5: "Closing",
-    };
-
     useEffect(() => {
         if (!submissionId) {
             navigate(-1);
@@ -85,28 +90,28 @@ const AgentDetailSubmission = () => {
             .join(" ");
 
     const formattedData = [
-        { label: "NIB", value: item.company.nib },
-        { label: "Status", value: item.status.status || "-" },
-        { label: "Skala Bisnis", value: item.company.business_scale?.name || "-" },
+        { label: "NIB", value: item.company?.nib },
+        { label: "Status", value: item.status?.status || "-" },
+        { label: "Skala Bisnis", value: item.company?.business_scale?.name || "-" },
         { label: "Lokasi", value: "" },
         {
-            label: "Provinsi", value: item.company.province?.name
-                ? toTitleCase(item.company.province.name)
+            label: "Provinsi", value: item.company?.province?.name
+                ? toTitleCase(item.company?.province?.name)
                 : "-",
         },
         {
-            label: "Kabupaten / Kota", value: item.company.regency?.name
-                ? toTitleCase(item.company.regency.name)
+            label: "Kabupaten / Kota", value: item.company?.regency?.name
+                ? toTitleCase(item.company?.regency?.name)
                 : "-",
         },
         {
-            label: "Kecamatan", value: item.company.district?.name
-                ? toTitleCase(item.company.district.name)
+            label: "Kecamatan", value: item.company?.district?.name
+                ? toTitleCase(item.company?.district?.name)
                 : "-",
         },
         {
-            label: "Kelurahan / Desa", value: item.company.village?.name
-                ? toTitleCase(item.company.village.name)
+            label: "Kelurahan / Desa", value: item.company?.village?.name
+                ? toTitleCase(item.company?.village?.name)
                 : "-",
         },
         { label: "Jenis Produk", value: item.product_type?.type || "-" },
@@ -114,6 +119,12 @@ const AgentDetailSubmission = () => {
         { label: "Jenis Pengajuan", value: item.type || "-" },
         { label: "Jumlah Fasilitas", value: item.facility || "-" },
         { label: "Jumlah Produk", value: item.product || "-" },
+        { label: "Alamat Perusahaan", value: item.company?.attr?.address || "-" },
+        { label: "Telepon Perusahaan", value: item.company?.attr?.phone || "-" },
+        { label: "Email Perusahaan", value: item.company?.attr?.email || "-" },
+        { label: "Nama PIC", value: item.company?.attr?.pic_name || "-" },
+        { label: "Telepon PIC", value: item.company?.attr?.pic_phone || "-" },
+        { label: "Email PIC", value: item.company?.attr?.pic_email || "-" },
     ];
 
 
@@ -123,19 +134,19 @@ const AgentDetailSubmission = () => {
 
             <div className="flex justify-between mt-3 pl-2">
                 <div>
-                    <div className="text-lg font-bold">{item.company.name}</div>
+                    <div className="text-lg font-bold">{item.company?.name}</div>
                     <div className="text-sm text-gray-500">Submission ID : {item.id}</div>
                 </div>
                 <div>
                     <button
-                        disabled={!item.status.edit}
+                        disabled={!item.status?.edit}
                         className={`sm:py-2 py-1 sm:px-3 px-1.5 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 rounded-lg 
                             ${item.status.edit
                                 ? "border-[#7EC34B] text-[#7EC34B] bg-white hover:bg-gray-200"
                                 : "border-gray-400 text-gray-400 bg-gray-100 cursor-not-allowed"
                             }`}
                         onClick={() => {
-                            if (item.status.edit) {
+                            if (item.status?.edit) {
                                 sessionStorage.setItem("submissionId", item.id.toString());
                                 navigate("/submission/detail-submission/edit-submission", {
                                     state: { id: item.id, allowed: true, },
@@ -190,21 +201,24 @@ const AgentDetailSubmission = () => {
                             <div className="flex justify-between px-3 pb-1">
                                 <div>
                                     <div className="font-semibold">{activity.activity}</div>
-                                    <div className="text-xs text-gray-500">
-                                        {new Date(activity.date).toLocaleDateString("id-ID", {
-                                            day: "2-digit",
-                                            month: "2-digit",
-                                            year: "numeric",
-                                        })}
+                                    <div className="flex items-center space-x-2 text-xs text-gray-500">
+                                        <span>
+                                            {new Date(activity.date).toLocaleDateString("id-ID", {
+                                                day: "2-digit",
+                                                month: "2-digit",
+                                                year: "numeric",
+                                            })}
+                                        </span>
+                                        <span className="w-1 h-1 rounded-full bg-gray-500"></span>
+                                        <span>{item.user.name}</span>
                                     </div>
-
                                 </div>
+
                                 <div>
                                     <span className="text-xs bg-gray-300 px-2 py-1 rounded">
-                                        {statusMap[activity.status] || "Unknown"}
+                                        {activity?.status?.status || "Unknown"}
                                     </span>
                                 </div>
-
                             </div>
                             <div className="mt-2 border-t-1 border-black px-3 pt-3">Respon : {activity.response}</div>
                         </div>

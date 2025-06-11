@@ -16,6 +16,8 @@ const AgentSubmission = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filterAppliedTrigger, setFilterAppliedTrigger] = useState<number>(0);
+  const [selectedBusinessScale, setSelectedBusinessScale] = useState<string | null>(null);
+  const [selectedSubmissionType, setSelectedSubmissionType] = useState<string | null>(null);
 
 
   const handleCloseAddModal = () => setIsAddModalOpen(false);
@@ -25,11 +27,13 @@ const AgentSubmission = () => {
     id: "",
     date: "",
     status: "",
+    scale: "",
+    submissionType: "",
   });
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSearchQuery(searchText); // Simpan query pencarian
+    setSearchQuery(searchText);
   };
 
   return (
@@ -91,10 +95,15 @@ const AgentSubmission = () => {
         </button>
       </div>
 
+
+
+
       <CardAgentSubmission
         searchQuery={searchQuery}
         filters={filterOptions}
         filterAppliedTrigger={filterAppliedTrigger}
+        selectedBusinessScale={selectedBusinessScale}
+        selectedSubmissionType={selectedSubmissionType}
       />
 
       <SubmissionAddModal
@@ -110,7 +119,9 @@ const AgentSubmission = () => {
         filters={filterOptions}
         setFilters={setFilterOptions}
         onApply={() => {
-          setFilterAppliedTrigger(prev => prev + 1); // Ini akan memicu useEffect di CardAgentSubmission
+          setFilterAppliedTrigger(prev => prev + 1);
+          setSelectedBusinessScale(filterOptions.scale || null);
+          setSelectedSubmissionType(filterOptions.submissionType || null);
         }}
       />
     </div>

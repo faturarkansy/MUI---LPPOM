@@ -6,215 +6,222 @@ import Chart from "react-apexcharts";
 import { useState, useEffect } from "react";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 import axiosClient from "../../../axios-client";
-
-interface Submission {
-  company_id: number | null;
-}
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
 
 const AgentDashboard = () => {
-  const [chartOptions, setChartOptions] = useState({});
-  const [totalSubmissions, setTotalSubmissions] = useState(0);
-  const [totalCompanies, setTotalCompanies] = useState(0);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [summary, setSummary] = useState<any>(null);
+
+  const [chartOptions, setChartOptions] = useState<any>({});
+  const [activityChartSeries, setActivityChartSeries] = useState<any>([]);
+  const [submissionChartSeries, setSubmissionChartSeries] = useState<any>([]);
 
   const getResponsiveFontSize = () => {
-    if (window.innerWidth < 640) {
-      return '10px'; // Mobile
-    } else {
-      return '14px'; // Desktop
-    }
+    return window.innerWidth < 640 ? "10px" : "14px";
   };
 
   useEffect(() => {
     const now = new Date();
-
-    // Tahun dan bulan saat ini
     const year = now.getFullYear();
-    const month = now.getMonth(); // 0-based (0 = Jan, 11 = Dec)
-
-    // Hitung jumlah hari dalam bulan ini
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // 0 berarti hari terakhir dari bulan sebelumnya
-
-    // Kalau jumlah hari > 1, mulai dari hari ke-2, kalau tidak mulai dari hari pertama
-    const startDay = daysInMonth > 1 ? 2 : 1;
-    const firstDayOfMonth = new Date(year, month, startDay);
-    const formattedFirstDay = firstDayOfMonth.toISOString().split("T")[0];
-
-    const formattedToday = now.toISOString().split("T")[0];
-
-    console.log("Jumlah hari di bulan ini:", daysInMonth);
-    console.log("Tanggal awal (startDate):", formattedFirstDay);
-    console.log("Tanggal akhir (today):", formattedToday);
-
-    setStartDate(formattedFirstDay);
-    setEndDate(formattedToday);
+    const month = now.getMonth();
+    const firstDay = new Date(year, month, 1);
+    setStartDate(firstDay);
+    setEndDate(now);
   }, []);
 
+  const fetchSummaryData = async () => {
+    if (!startDate || !endDate) return;
 
+    const start = startDate.toISOString().split("T")[0];
+    const end = endDate.toISOString().split("T")[0];
 
-  useEffect(() => {
-    const fetchTotalSubmissions = async () => {
-      try {
-        const response = await axiosClient.get("/submissions");
-        const submissions: Submission[] = response.data?.data || [];
+    try {
+      const res = await axiosClient.get(`/data/summary?periode[start]=${start}&periode[end]=${end}`);
+      const data = res.data;
 
-        // Set total submissions
-        setTotalSubmissions(submissions.length);
+      setSummary(data);
 
-        // Hitung company_id unik
-        const uniqueCompanyIds = new Set(submissions.map(item => item.company_id));
-        setTotalCompanies(uniqueCompanyIds.size);
-
-      } catch (error) {
-        console.error("Failed to fetch total submissions:", error);
-        setTotalSubmissions(0);
-        setTotalCompanies(0);
-      }
-    };
-
-
-    fetchTotalSubmissions();
-  }, []);
-
-
-  useEffect(() => {
-    const updateChartOptions = () => {
-      const fontSize = getResponsiveFontSize();
-
-      setChartOptions({
-        chart: {
-          id: "submission-status",
-          toolbar: { show: false },
+      // Set chart series
+      setActivityChartSeries([
+        {
+          name: "Activities",
+          data: [
+            data.activities.status.Prospect || 0,
+            data.activities.status.Approaching || 0,
+            data.activities.status.Presenting || 0,
+            data.activities.status.Offering || 0,
+            data.activities.status.Closing || 0,
+          ],
         },
+      ]);
+
+      setSubmissionChartSeries([
+        {
+          name: "Submissions",
+          data: [
+            data.submission.status.New || 0,
+            data.submission.status.Open || 0,
+            data.submission.status.Process || 0,
+            data.submission.status.Pending || 0,
+            data.submission.status.Complete || 0,
+            data.submission.status.Cancel || 0,
+          ],
+        },
+      ]);
+
+    } catch (err) {
+      console.error("Failed to fetch summary data:", err);
+    }
+  };
+
+  useEffect(() => {
+    const fontSize = getResponsiveFontSize();
+
+    setChartOptions({
+      chart: {
+        toolbar: { show: false },
+      },
+      xaxis: {
+        labels: {
+          style: {
+            fontSize: fontSize,
+            colors: "#4B5563",
+          },
+        },
+      },
+      yaxis: {
+        show: false,
+      },
+      grid: {
+        yaxis: { lines: { show: false } },
+      },
+      plotOptions: {
+        bar: {
+          columnWidth: "20%",
+        },
+      },
+      dataLabels: {
+        enabled: true,
+      },
+      colors: ["#4F46E5"],
+      legend: {
+        show: false,
+      },
+    });
+
+    window.addEventListener("resize", () => {
+      setChartOptions((prev: any) => ({
+        ...prev,
         xaxis: {
-          categories: ["Prospek", "Approaching", "Presenting", "Offering", "Closing"],
+          ...prev.xaxis,
           labels: {
-            style: {
-              fontSize: fontSize,
-              colors: '#4B5563',
-            },
+            ...prev.xaxis.labels,
+            fontSize: getResponsiveFontSize(),
           },
         },
-        yaxis: {
-          show: false,
-        },
-        grid: {
-          yaxis: {
-            lines: { show: false },
-          },
-        },
-        plotOptions: {
-          bar: {
-            columnWidth: '20%',
-            distributed: false,
-          },
-        },
-        dataLabels: {
-          enabled: true,
-        },
-        colors: ["#4F46E5"],
-        legend: {
-          show: false, // <- Tambahkan ini
-        },
-      });
-    };
+      }));
+    });
 
-    // Set initial chart options
-    updateChartOptions();
-
-    // Update on resize
-    window.addEventListener('resize', updateChartOptions);
-    return () => window.removeEventListener('resize', updateChartOptions);
+    return () => window.removeEventListener("resize", () => { });
   }, []);
 
-  const chartSeries = [
-    {
-      name: "Submission",
-      data: [12, 18, 10, 9, 14], // dummy data
-    },
-  ];
+  useEffect(() => {
+    fetchSummaryData();
+  }, [startDate, endDate]);
 
   return (
     <div>
       <PageBreadcrumb pageTitle="Dashboard" />
       <div className="space-y-3 min-h-screen">
-        <div className="flex items-center space-x-2 mt-3">
-          <input
-            type="date"
-            className="border-black border-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-fit min-w-[5rem]"
-            value={startDate}
+        {/* <div className="flex items-center mt-3 ">
+          <DatePicker
+            selected={startDate}
+            onChange={(date: Date | null) => setStartDate(date)}
+            dateFormat="dd-MM-yyyy"
+            className="border-black border-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-[95px]"
+            placeholderText="Start Date"
+            popperContainer={({ children }) => <div>{children}</div>}
           />
-          <span className="text-gray-600">-</span>
-          <input
-            type="date"
-            className="border-black border-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-fit min-w-[5rem]"
-            value={endDate}
+          <span className="text-gray-600 mx-2">-</span>
+          <DatePicker
+            selected={endDate}
+            onChange={(date: Date | null) => setEndDate(date)}
+            dateFormat="dd-MM-yyyy"
+            className="border-black border-2 mr-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-[95px]"
+            placeholderText="End Date"
+            popperContainer={({ children }) => <div>{children}</div>}
           />
-          <button className="bg-black text-white sm:py-2 py-1.5 sm:px-3 px-2 ml-1 text-xs sm:text-sm border-black border-2 rounded-lg w-fit hover:bg-gray-400 hover:text-black">
+          <button
+            onClick={fetchSummaryData}
+            className="bg-black text-white sm:py-2 py-1.5 sm:px-3 px-2 ml-1 text-xs sm:text-sm border-black border-2 rounded-lg w-fit hover:bg-gray-400 hover:text-black"
+          >
             Filter
           </button>
-        </div>
-        {/* Top 4 Cards */}
-        <div className="grid grid-cols-2 gap-3 mt-3">
+        </div> */}
 
-          {/* Card 1 */}
+        {/* Cards */}
+        <div className="grid grid-cols-2 gap-3 mt-3">
+          {/* Total Pelaku Usaha */}
           <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
             <div className="p-3 bg-yellow-100 text-yellow-600 rounded-lg">
               <IconUsersGroup size={24} />
             </div>
             <div className="ml-4">
-              <h2 className="text-xl font-semibold">{totalCompanies}</h2>
-              <p className="text-gray-600 text-xs">Total Pelaku Usaha</p>
+              <h2 className="text-xl font-semibold">{summary?.company.total ?? 0}</h2>
+              <p className="text-gray-600 text-xs">Pelaku Usaha</p>
             </div>
           </div>
 
-          {/* Card 2 */}
+          {/* Total Tersertifikasi */}
           <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
             <div className="p-3 bg-green-100 text-green-600 rounded-lg">
               <IconUserCheck size={24} />
             </div>
             <div className="ml-4">
-              <h2 className="text-xl font-semibold">53</h2>
-              <p className="text-gray-600 text-xs">Total Pelaku Usaha dengan Submission Berhasil</p>
+              <h2 className="text-xl font-semibold">{summary?.company.has_certified ?? 0}</h2>
+              <p className="text-gray-600 text-xs">Pelaku Usaha Bersertifikat</p>
             </div>
           </div>
-          {/* Card 3 */}
+
+          {/* Total Submission */}
           <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
             <div className="p-3 bg-blue-100 text-blue-600 rounded-lg">
               <IconUsersGroup size={24} />
             </div>
             <div className="ml-4">
-              <h2 className="text-xl font-semibold">{totalSubmissions}</h2>
-              <p className="text-gray-600 text-xs">Total Submission</p>
+              <h2 className="text-xl font-semibold">{summary?.submission.total ?? 0}</h2>
+              <p className="text-gray-600 text-xs">Submission</p>
             </div>
           </div>
 
-          {/* Card 4  */}
+          {/* Submission Complete */}
           <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
             <div className="p-3 bg-green-100 text-green-600 rounded-lg">
               <IconUserCheck size={24} />
             </div>
             <div className="ml-4">
-              <h2 className="text-xl font-semibold">65</h2>
-              <p className="text-gray-600 text-xs">Total Submission Berhasil</p>
+              <h2 className="text-xl font-semibold">{summary?.submission.status?.Complete ?? 0}</h2>
+              <p className="text-gray-600 text-xs">Submission Success</p>
             </div>
           </div>
         </div>
 
-        {/* Chart 1 */}
+        {/* Chart - Activities */}
         <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
-            <h3 className="text-lg font-semibold text-gray-800">
-              Status Activities
-            </h3>
-          </div>
-
+          <h3 className="text-lg font-semibold text-gray-800">Status Activities</h3>
           <div className="overflow-x-scroll">
-            <div className="min-w-[600px]"> {/* Atur min-width sesuai kebutuhan */}
+            <div className="min-w-[600px]">
               <Chart
-                options={chartOptions}
-                series={chartSeries}
+                options={{
+                  ...chartOptions,
+                  xaxis: {
+                    ...chartOptions.xaxis,
+                    categories: ["Prospect", "Approaching", "Presenting", "Offering", "Closing"],
+                  },
+                }}
+                series={activityChartSeries}
                 type="bar"
                 height={200}
                 width="100%"
@@ -223,20 +230,20 @@ const AgentDashboard = () => {
           </div>
         </div>
 
-
-        {/* Chart 2 */}
+        {/* Chart - Submissions */}
         <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
-            <h3 className="text-lg font-semibold text-gray-800">
-              Status Submissions
-            </h3>
-          </div>
-
+          <h3 className="text-lg font-semibold text-gray-800">Status Submissions</h3>
           <div className="overflow-x-scroll">
-            <div className="min-w-[600px]"> {/* Atur min-width sesuai kebutuhan */}
+            <div className="min-w-[600px]">
               <Chart
-                options={chartOptions}
-                series={chartSeries}
+                options={{
+                  ...chartOptions,
+                  xaxis: {
+                    ...chartOptions.xaxis,
+                    categories: ["New", "Open", "Process", "Pending", "Complete", "Cancel"],
+                  },
+                }}
+                series={submissionChartSeries}
                 type="bar"
                 height={200}
                 width="100%"
@@ -246,7 +253,6 @@ const AgentDashboard = () => {
         </div>
       </div>
     </div>
-
   );
 };
 

@@ -2,12 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import Profile from "../icons/profile-icon-white.svg";
+import Logo from "../icons/logo_lppom.svg";
 import {
   ChevronRightIcon,
   HorizontaLDots,
   UserIcon,
   BuildingIcon,
-  MuiIcon,
   BooksIcon,
   ListDetailIcon,
 } from "../icons";
@@ -272,10 +272,10 @@ const AppSidebar: React.FC<SidebarProps> = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0  bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-gray-200
+      className={`fixed mt-15 flex flex-col lg:mt-0 top-0  bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-gray-200
       ${isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"}
       ${isMobile ? `${isMobileOpen ? "right-0" : "-right-full"} border-l` : "left-0 border-r"}
-      ${isMobile ? "" : "lg:left-0 lg:translate-x-0"}
+      ${isMobile ? "" : "md:left-0 lg:translate-x-0"}
     `}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -307,13 +307,21 @@ const AppSidebar: React.FC<SidebarProps> = () => {
           : "flex justify-start"
           }`}
       >
-        <h4 className="w-full flex justify-evenly items-center mt-2 font-bold text-gray-800 text-title-sm">
-          <MuiIcon className="w-12 h-12" />
-          <span>
-            {isExpanded || isMobileOpen || isHovered ? " LPPOM MUI" : null}
+        <h4 className="w-full flex justify-evenly font-bold text-gray-800 text-title-sm ml-6">
+          <Link to="/" className="flex w-full">
+            <img
+              src={Logo}
+              alt="Logo"
+              className="h-12"
+            />
+          </Link>
+          {/* Tampilkan teks hanya pada layar kecil */}
+          <span className="lg:hidden">
+            {isExpanded || isMobileOpen || isHovered ? "LPPOM MUI" : null}
           </span>
         </h4>
       </div>
+
 
       {/* Menu */}
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar px-6">

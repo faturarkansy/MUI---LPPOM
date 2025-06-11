@@ -9,6 +9,10 @@ const whitelistedPaths = [
     "/post-test",
     "/e-learning",
     "/result-post-test",
+    "/profile",
+    "/profile/edit-profile",
+    "/profile/change-password",
+    "/profile/terms-and-conditions",
 ];
 
 export default function ProtectedRouteWithWhitelist({

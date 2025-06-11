@@ -3,6 +3,14 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client";
 import Notification from "../../../components/common/Notification";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
+import Select from "react-select";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+interface Option {
+    value: string;
+    label: string;
+}
 
 const AgentAddActivity = () => {
     const todayDate = new Date().toISOString().split("T")[0];
@@ -15,10 +23,11 @@ const AgentAddActivity = () => {
     });
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<any>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const location = useLocation();
     const submissionId = location.state?.id;
+    const [options, setOptions] = useState<Option[]>([]);
 
     useEffect(() => {
         if (submissionId) {
@@ -28,6 +37,22 @@ const AgentAddActivity = () => {
             }));
         }
     }, [submissionId]);
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const response = await axiosClient.get("/data/activity-status");
+                const data = response.data.map((item: any) => ({
+                    value: item.id.toString(),
+                    label: item.status,
+                }));
+                setOptions(data);
+            } catch (err) {
+                console.error("Error fetching options:", err);
+            }
+        };
+        fetchOptions();
+    }, []);
 
     useEffect(() => {
         if (success) {
@@ -67,7 +92,7 @@ const AgentAddActivity = () => {
 
     return (
         <div>
-            <PageBreadcrumb pageTitle="Submissions" />
+            <PageBreadcrumb pageTitle="Add Activity" />
             {error && (
                 <Notification
                     type="error"
@@ -100,27 +125,37 @@ const AgentAddActivity = () => {
 
                 <div>
                     <label className="block font-medium">Date</label>
-                    <input
-                        type="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={handleChange}
+                    <DatePicker
+                        selected={formData.date ? new Date(formData.date) : null}
+                        onChange={(date: Date | null) => {
+                            setFormData({ ...formData, date: date ? date.toISOString().split('T')[0] : '' });
+                        }}
+                        dateFormat="dd-MM-yyyy"
                         className="w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                        required
+                        placeholderText="Select Date"
+                        wrapperClassName="w-full"
                     />
                 </div>
 
+
                 <div>
-                    <label htmlFor="status" className="block font-medium">Status</label>
-                    <input
-                        type="text"
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                        className="w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                        placeholder=""
+                    <label htmlFor="status">Status</label>
+                    <Select
+                        options={options}
+                        value={options.find((opt) => opt.value === formData.status)}
+                        onChange={(option) =>
+                            setFormData((prev) => ({
+                                ...prev,
+                                status: option?.value || "",
+                            }))
+                        }
+                        className="border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         required
+
                     />
+                    {error?.status && (
+                        <span className="text-red-500 text-sm">{error.status[0]}</span>
+                    )}
                 </div>
 
                 <div>

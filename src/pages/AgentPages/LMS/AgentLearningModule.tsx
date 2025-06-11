@@ -106,7 +106,7 @@ const MHOLearningModule = () => {
             {modules.map((item) => (
               <div
                 key={item.id}
-                className="border-1 bg-white border-gray-400 rounded-xl flex flex-col items-center shadow-sm"
+                className="border-1 bg-white border-gray-400 rounded-xl flex flex-col shadow-sm"
               >
                 {/* Top Row: Icon + Type + Learn Button */}
                 <div className="grid grid-cols-2 w-full px-3 sm:px-6 py-4">

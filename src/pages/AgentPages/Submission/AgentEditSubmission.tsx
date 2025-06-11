@@ -5,6 +5,7 @@ import Notification from "../../../components/common/Notification.js";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Select from "react-select";
 
 interface CompanyFormData {
     user_id: string;
@@ -66,6 +67,7 @@ const AgentEditSubmission: React.FC = () => {
     const [businessScale, setBusinessScale] = useState<any[]>([]);
     const navigate = useNavigate();
     const [productTypes, setProductTypes] = useState<any[]>([]);
+    const [submissionTypes, setSubmissionTypes] = useState<string[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const location = useLocation();
     const submissionId = location.state?.id;
@@ -115,8 +117,8 @@ const AgentEditSubmission: React.FC = () => {
 
                     setFormData({
                         user_id: data.user_id || "",
-                        nib: data.company.nib || "",
-                        name: data.company.name || "",
+                        nib: data.company?.nib || "",
+                        name: data.company?.name || "",
                         business_scale_id: data.business_scale_id || "",
                         product_type_id: data.product_type_id || "",
                         type: data.type || "",
@@ -128,12 +130,12 @@ const AgentEditSubmission: React.FC = () => {
                         district_id: data.district_id || "",
                         village_id: data.village_id || "",
                         meta: {
-                            address: data.company.attr.address || "",
-                            phone: data.company.attr.phone || "",
-                            email: data.company.attr.email || "",
-                            pic_name: data.company.attr.pic_name || "",
-                            pic_phone: data.company.attr.pic_phone || "",
-                            pic_email: data.company.attr.pic_email || "",
+                            address: data.company?.attr?.address || "",
+                            phone: data.company?.attr?.phone || "",
+                            email: data.company?.attr?.email || "",
+                            pic_name: data.company?.attr?.pic_name || "",
+                            pic_phone: data.company?.attr?.pic_phone || "",
+                            pic_email: data.company?.attr?.pic_email || "",
                         },
                     });
                 } catch (error) {
@@ -156,6 +158,10 @@ const AgentEditSubmission: React.FC = () => {
             const axiosResponse = await axiosClient.get("/data/business-scales");
             setBusinessScale(axiosResponse.data || []);
         };
+        const fetchSubmissionTypes = async () => {
+            const axiosResponse = await axiosClient.get("/data/submission-types");
+            setSubmissionTypes(axiosResponse.data || []);
+        };
         const fetchProvinces = async () => {
             const axiosResponse = await axiosClient.get("/data/provinces");
             setProvinces(axiosResponse.data || []);
@@ -166,6 +172,7 @@ const AgentEditSubmission: React.FC = () => {
         };
 
         fetchBusinessScale();
+        fetchSubmissionTypes();
         fetchProvinces();
         fetchProductTypes();
     }, []);
@@ -318,6 +325,19 @@ const AgentEditSubmission: React.FC = () => {
             handleFormSubmit();
         }
     };
+    const options = submissionTypes.map((type) => ({
+        value: type,
+        label: type,
+    }));
+
+    const handleTypeChange = (selectedOption: { value: string; label: string } | null) => {
+        if (selectedOption) {
+            setFormData(prev => ({
+                ...prev,
+                type: selectedOption.value
+            }));
+        }
+    };
 
     return (
         <div>
@@ -351,23 +371,28 @@ const AgentEditSubmission: React.FC = () => {
                 </div>
                 <div>
                     <label htmlFor="business_scale_id" className="text-sm">Skala Bisnis</label>
-                    <select
+                    <Select
                         id="business_scale_id"
-                        value={formData.business_scale_id}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            .....
-                        </option>
-                        {businessScale.map((scale) => (
-                            <option key={scale.id} value={scale.id}>{scale.name}</option>
-                        ))}
-                    </select>
+                        options={businessScale.map((scale) => ({
+                            value: scale.id,
+                            label: scale.name,
+                        }))}
+                        value={businessScale
+                            .map((scale) => ({ value: scale.id, label: scale.name }))
+                            .find((option) => option.value === formData.business_scale_id)}
+                        onChange={(selectedOption) =>
+                            setFormData((prev) => ({
+                                ...prev,
+                                business_scale_id: selectedOption?.value || "",
+                            }))
+                        }
+                        className="border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                    />
                     {errors.business_scale_id && (
                         <p className="text-red-500 text-sm">{errors.business_scale_id}</p>
                     )}
                 </div>
+
                 <div>
                     <label htmlFor="product_type_id" className="text-sm">
                         Jenis Produk
@@ -395,25 +420,14 @@ const AgentEditSubmission: React.FC = () => {
                     <label htmlFor="type" className="text-sm">
                         Jenis Pengajuan
                     </label>
-                    <select
+                    <Select
                         id="type"
-                        value={formData.type}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            .....
-                        </option>
-                        <option key={1} value={"Baru"}>
-                            Baru
-                        </option>
-                        <option key={2} value={"Pengembangan Produk"}>
-                            Pengembangan Produk
-                        </option>
-                        <option key={3} value={"Pengembangan Fasilitas"}>
-                            Pengembangan Fasilitas
-                        </option>
-                    </select>
+                        options={options}
+                        value={options.find(option => option.value === formData.type)}
+                        onChange={handleTypeChange}
+                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        classNamePrefix="react-select"
+                    />
                     {errors.type && (
                         <p className="text-red-500 text-sm">{errors.type}</p>
                     )}
@@ -432,7 +446,7 @@ const AgentEditSubmission: React.FC = () => {
                                 date: date?.toISOString().split("T")[0] || "",
                             });
                         }}
-                        dateFormat="dd/MM/yyyy"
+                        dateFormat="dd-MM-yyyy"
                         className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         wrapperClassName="w-full"
                     />
@@ -475,21 +489,24 @@ const AgentEditSubmission: React.FC = () => {
                     <label htmlFor="province_id" className="text-sm">
                         Provinsi
                     </label>
-                    <select
+                    <Select
                         id="province_id"
-                        value={formData.province_id}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            ....
-                        </option>
-                        {provinces.map((province: any) => (
-                            <option key={province.id} value={province.id}>
-                                {province.name}
-                            </option>
-                        ))}
-                    </select>
+                        options={provinces.map((province) => ({
+                            value: province.id,
+                            label: province.name,
+                        }))}
+                        value={provinces
+                            .map((province) => ({ value: province.id, label: province.name }))
+                            .find((option) => option.value === formData.province_id)}
+                        onChange={(selectedOption) =>
+                            setFormData((prev) => ({
+                                ...prev,
+                                province_id: selectedOption?.value || "",
+                            }))
+                        }
+                        placeholder="Pilih Provinsi"
+                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                    />
                     {errors.province_id && (
                         <p className="text-red-500 text-sm">{errors.province_id}</p>
                     )}
@@ -499,21 +516,24 @@ const AgentEditSubmission: React.FC = () => {
                     <label htmlFor="regency_id" className="text-sm">
                         Kabupaten / Kota
                     </label>
-                    <select
+                    <Select
                         id="regency_id"
-                        value={formData.regency_id}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            .....
-                        </option>
-                        {regencies.map((regency: any) => (
-                            <option key={regency.id} value={regency.id}>
-                                {regency.name}
-                            </option>
-                        ))}
-                    </select>
+                        options={regencies.map((regency) => ({
+                            value: regency.id,
+                            label: regency.name,
+                        }))}
+                        value={regencies
+                            .map((regency) => ({ value: regency.id, label: regency.name }))
+                            .find((option) => option.value === formData.regency_id)}
+                        onChange={(selectedOption) =>
+                            setFormData((prev) => ({
+                                ...prev,
+                                regency_id: selectedOption?.value || "",
+                            }))
+                        }
+                        placeholder="Pilih..."
+                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                    />
                     {errors.regency_id && (
                         <p className="text-red-500 text-sm">{errors.regency_id}</p>
                     )}
@@ -522,21 +542,24 @@ const AgentEditSubmission: React.FC = () => {
                     <label htmlFor="district_id" className="text-sm">
                         Kecamatan
                     </label>
-                    <select
+                    <Select
                         id="district_id"
-                        value={formData.district_id}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            .....
-                        </option>
-                        {districts.map((district: any) => (
-                            <option key={district.id} value={district.id}>
-                                {district.name}
-                            </option>
-                        ))}
-                    </select>
+                        options={districts.map((district) => ({
+                            value: district.id,
+                            label: district.name,
+                        }))}
+                        value={districts
+                            .map((district) => ({ value: district.id, label: district.name }))
+                            .find((option) => option.value === formData.district_id)}
+                        onChange={(selectedOption) =>
+                            setFormData((prev) => ({
+                                ...prev,
+                                district_id: selectedOption?.value || "",
+                            }))
+                        }
+                        placeholder="Pilih..."
+                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                    />
                     {errors.district_id && (
                         <p className="text-red-500 text-sm">{errors.district_id}</p>
                     )}
@@ -545,21 +568,24 @@ const AgentEditSubmission: React.FC = () => {
                     <label htmlFor="village_id" className="text-sm">
                         Kelurahan / Desa
                     </label>
-                    <select
+                    <Select
                         id="village_id"
-                        value={formData.village_id}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
-                    >
-                        <option value="" disabled>
-                            .....
-                        </option>
-                        {villages.map((village: any) => (
-                            <option key={village.id} value={village.id}>
-                                {village.name}
-                            </option>
-                        ))}
-                    </select>
+                        options={villages.map((village) => ({
+                            value: village.id,
+                            label: village.name,
+                        }))}
+                        value={villages
+                            .map((village) => ({ value: village.id, label: village.name }))
+                            .find((option) => option.value === formData.village_id)}
+                        onChange={(selectedOption) =>
+                            setFormData((prev) => ({
+                                ...prev,
+                                village_id: selectedOption?.value || "",
+                            }))
+                        }
+                        placeholder="Pilih..."
+                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                    />
                     {errors.village_id && (
                         <p className="text-red-500 text-sm">{errors.village_id}</p>
                     )}

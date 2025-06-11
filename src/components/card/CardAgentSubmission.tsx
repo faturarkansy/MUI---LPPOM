@@ -9,6 +9,7 @@ interface Submission {
     name: string;
     product_type_id: string;
     date: string;
+    business_scale: string;
     type: string;
     status: string;
 }
@@ -22,12 +23,20 @@ interface Props {
         status: string;
     };
     filterAppliedTrigger?: number;
+    selectedBusinessScale?: string | null;
+    selectedSubmissionType?: string | null;
 }
 
 
-const CardAgentSubmission: React.FC<Props> = ({ searchQuery, filters, filterAppliedTrigger }) => {
+const CardAgentSubmission: React.FC<Props> = ({
+    searchQuery,
+    filters,
+    filterAppliedTrigger,
+    selectedBusinessScale,
+    selectedSubmissionType, }) => {
     const navigate = useNavigate();
     const [dataPelakuUsaha, setDataPelakuUsaha] = useState<Submission[]>([]);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,6 +60,7 @@ const CardAgentSubmission: React.FC<Props> = ({ searchQuery, filters, filterAppl
                     name: item.company?.name || "-",
                     product_type_id: typeof item.product_type?.type === 'string' ? item.product_type.type : JSON.stringify(item.product_type?.type),
                     date: item.date,
+                    business_scale: item.business_scale.name,
                     type: item.type,
                     status: item.status?.status || "-",
                 }));
@@ -78,13 +88,21 @@ const CardAgentSubmission: React.FC<Props> = ({ searchQuery, filters, filterAppl
         const statusMatch = filters?.status
             ? item.status.toLowerCase().includes(filters.status.toLowerCase())
             : true;
-
         const searchMatch = item.name
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
 
-        return nameMatch && idMatch && dateMatch && statusMatch && searchMatch;
+        const scaleMatch = selectedBusinessScale
+            ? item.business_scale.toLowerCase() === selectedBusinessScale.toLowerCase()
+            : true;
+
+        const typeMatch = selectedSubmissionType
+            ? item.type.toLowerCase() === selectedSubmissionType.toLowerCase()
+            : true;
+
+        return nameMatch && idMatch && dateMatch && statusMatch && searchMatch && scaleMatch && typeMatch;
     });
+
 
 
     return (

@@ -4,13 +4,12 @@ import Notification from "../../../components/common/Notification";
 import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 
 interface ApiData {
-    title: string;
     content: string;
 }
 
 
 const AgentAgreement: React.FC = () => {
-    const [apiData, setApiData] = useState<ApiData>({ title: "", content: "" });
+    const [apiData, setApiData] = useState<ApiData>({ content: "" });
     const [notif, setNotif] = useState<{ message: string; type: "success" | "error" }>({
         message: "",
         type: "success",
@@ -20,8 +19,8 @@ const AgentAgreement: React.FC = () => {
         const fetchData = async () => {
             try {
                 const response = await axiosClient.get("/agreements");
-                const data = response.data.data;
-                setApiData({ title: data.title, content: data.content });
+                const data = response.data;
+                setApiData({ content: data.content });
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setNotif({ message: "Gagal mengambil data. Silakan coba lagi.", type: "error" });
