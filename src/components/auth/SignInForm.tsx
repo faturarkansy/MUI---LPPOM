@@ -39,6 +39,17 @@ export default function SignInForm() {
     axiosClient
       .post("/tokens", payload)
       .then(({ data }) => {
+        // Cek apakah role-nya agent
+        if (data.role !== "agent") {
+          // Jika bukan agent, tampilkan notifikasi dan jangan set user/token
+          setNotification({
+            message: "Invalid Credentials",
+            type: "error",
+          });
+          return; // hentikan proses
+        }
+
+        // Jika agent, baru set user dan token
         const user = {
           id: data.id,
           role: data.role,
@@ -50,6 +61,7 @@ export default function SignInForm() {
           status: data.status,
         };
         const token = data.token;
+
         setUser(user);
         setToken(token);
       })
@@ -112,19 +124,17 @@ export default function SignInForm() {
           )}
         </div>
 
-        <div className="flex items-center justify-between text-sm">
+        {/* <div className="flex items-center justify-between text-sm">
           <label className="flex items-center">
             <input type="checkbox" defaultChecked className="mr-2" />
             Remember Me
           </label>
-          <a href="#" className="font-semibold">
-            Forget Password?
-          </a>
-        </div>
+
+        </div> */}
 
         <button
           type="submit"
-          className="w-full bg-black text-white py-2 font-semibold"
+          className="w-full bg-black text-white py-2 font-semibold  rounded-md"
         >
           Login
         </button>

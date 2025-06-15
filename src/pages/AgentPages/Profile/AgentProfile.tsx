@@ -65,31 +65,31 @@ const AgentProfile: React.FC = () => {
             </div>
 
             {/* Menu Buttons */}
-            <div className="flex flex-col px-6 py-8 gap-4">
+            <div className="flex flex-col sm:px-6 px-2 py-8 gap-4">
                 <button
                     onClick={() => navigate("/profile/edit-profile")}
-                    className="w-full border bg-white border-black rounded-md py-3 px-4 text-left font-medium text-sm flex justify-between items-center hover:bg-gray-100 transition"
+                    className="w-full border bg-white border-black rounded-md sm:py-3 py-1.5 px-4 text-left font-medium text-sm flex justify-between items-center hover:bg-gray-100 transition"
                 >
                     Edit Profile <span className="text-lg">&gt;</span>
                 </button>
 
                 <button
                     onClick={() => navigate("/profile/change-password")}
-                    className="w-full border bg-white border-black rounded-md py-3 px-4 text-left font-medium text-sm flex justify-between items-center hover:bg-gray-100 transition"
+                    className="w-full border bg-white border-black rounded-md sm:py-3 py-1.5 px-4 text-left font-medium text-sm flex justify-between items-center hover:bg-gray-100 transition"
                 >
                     Change Password <span className="text-lg">&gt;</span>
                 </button>
 
                 <button
                     onClick={() => navigate("/profile/terms-and-conditions")}
-                    className="w-full border bg-white border-black rounded-md py-3 px-4 text-left font-medium text-sm flex justify-between items-center hover:bg-gray-100 transition"
+                    className="w-full border bg-white border-black rounded-md sm:py-3 py-1.5 px-4 text-left font-medium text-sm flex justify-between items-center hover:bg-gray-100 transition"
                 >
                     View Terms and Conditions <span className="text-lg">&gt;</span>
                 </button>
             </div>
 
             {/* Logout Button */}
-            <div className="pb-6 px-6 mt-5">
+            <div className="sm:px-6 px-2">
                 <button
                     onClick={signOutHandler}
                     className="w-full sm:py-2 py-1.5 sm:px-3 px-2 bg-black text-white rounded-md font-semibold text-xs sm:text-sm border-2 border-black hover:bg-gray-400 hover:text-black transition"

@@ -134,8 +134,8 @@ export default function ChangePasswordForm() {
 
     return (
         <div className="w-full max-w-md p-6 md:p-10 space-y-4">
-            <h2 className="text-4xl font-bold text-[#1975a6] text-left">Change Password</h2>
-            <p className="text-lg font-bold text-gray-400 text-left">We recommend you to change your password</p>
+            <h2 className="md:text-4xl text-3xl font-bold text-[#1975a6] text-left">Change Password</h2>
+            <p className="sm:text-lg text-sm font-bold text-gray-400 text-left">We recommend you to change your password</p>
 
             <form className="space-y-6" onSubmit={onSubmit}>
                 {/* Password Baru */}
@@ -179,7 +179,7 @@ export default function ChangePasswordForm() {
                 <div className="space-y-1.5">
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 font-semibold rounded-lg"
+                        className="w-full bg-black text-white py-2 font-semibold rounded-md"
                     >
                         Change Password
                     </button>
@@ -188,7 +188,7 @@ export default function ChangePasswordForm() {
 
                     <button
                         type="button"
-                        className="w-full bg-black text-white py-2 font-semibold rounded-lg"
+                        className="w-full bg-black text-white py-2 font-semibold rounded-md"
                         onClick={handleSkip}
                     >
                         Skip

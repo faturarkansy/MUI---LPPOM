@@ -82,7 +82,7 @@ const AgentAgreement: React.FC = () => {
 
 
     return (
-        <div className="min-h-screen flex items-center sm:items-start mt-0 sm:mt-8 px-6 sm:px-0 justify-center">
+        <div className="min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-md text-left">
                 {/* Title (Hardcoded) */}
                 <h1 className="text-3xl font-bold text-left w-full max-w-md">Terms & Conditions</h1>

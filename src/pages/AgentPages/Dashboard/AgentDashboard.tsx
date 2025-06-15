@@ -208,6 +208,28 @@ const AgentDashboard = () => {
           </div>
         </div>
 
+        {/* Chart - Submissions */}
+        <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
+          <h3 className="text-lg font-semibold text-gray-800">Status Submissions</h3>
+          <div className="overflow-x-scroll">
+            <div className="min-w-[600px]">
+              <Chart
+                options={{
+                  ...chartOptions,
+                  xaxis: {
+                    ...chartOptions.xaxis,
+                    categories: ["New", "Open", "Process", "Pending", "Complete", "Cancel"],
+                  },
+                }}
+                series={submissionChartSeries}
+                type="bar"
+                height={200}
+                width="100%"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Chart - Activities */}
         <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
           <h3 className="text-lg font-semibold text-gray-800">Status Activities</h3>
@@ -230,27 +252,7 @@ const AgentDashboard = () => {
           </div>
         </div>
 
-        {/* Chart - Submissions */}
-        <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
-          <h3 className="text-lg font-semibold text-gray-800">Status Submissions</h3>
-          <div className="overflow-x-scroll">
-            <div className="min-w-[600px]">
-              <Chart
-                options={{
-                  ...chartOptions,
-                  xaxis: {
-                    ...chartOptions.xaxis,
-                    categories: ["New", "Open", "Process", "Pending", "Complete", "Cancel"],
-                  },
-                }}
-                series={submissionChartSeries}
-                type="bar"
-                height={200}
-                width="100%"
-              />
-            </div>
-          </div>
-        </div>
+
       </div>
     </div>
   );
