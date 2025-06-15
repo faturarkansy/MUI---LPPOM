@@ -350,7 +350,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.nib}
                         onChange={handleInputChange}
                         type="text"
-                        className="mt-1 block w-full border border-black p-2 text-sm rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                     />
                     {errors.nib && (
                         <p className="text-red-500 text-sm">{errors.nib}</p>
@@ -363,7 +363,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.name}
                         onChange={handleInputChange}
                         type="text"
-                        className="mt-1 block w-full border border-black p-2 text-sm rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                     />
                     {errors.name && (
                         <p className="text-red-500 text-sm">{errors.name}</p>
@@ -386,7 +386,7 @@ const AgentEditSubmission: React.FC = () => {
                                 business_scale_id: selectedOption?.value || "",
                             }))
                         }
-                        className="border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="border border-gray-300 rounded focus:border-[#1975a6] focus:border-1 focus:outline-none"
                     />
                     {errors.business_scale_id && (
                         <p className="text-red-500 text-sm">{errors.business_scale_id}</p>
@@ -401,7 +401,7 @@ const AgentEditSubmission: React.FC = () => {
                         id="product_type_id"
                         value={formData.product_type_id}
                         onChange={handleInputChange}
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     >
                         <option value="" disabled>
                             .....
@@ -425,7 +425,7 @@ const AgentEditSubmission: React.FC = () => {
                         options={options}
                         value={options.find(option => option.value === formData.type)}
                         onChange={handleTypeChange}
-                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full border border-gray-300 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         classNamePrefix="react-select"
                     />
                     {errors.type && (
@@ -447,7 +447,7 @@ const AgentEditSubmission: React.FC = () => {
                             });
                         }}
                         dateFormat="dd-MM-yyyy"
-                        className="w-full p-2 border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 bg-gray-100"
                         wrapperClassName="w-full"
                     />
                     {errors.date && (
@@ -464,7 +464,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.facility}
                         onChange={handleInputChange}
                         type="number"
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.facility && (
                         <p className="text-red-500 text-sm">{errors.facility}</p>
@@ -479,7 +479,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.product}
                         onChange={handleInputChange}
                         type="number"
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.product && (
                         <p className="text-red-500 text-sm">{errors.product}</p>
@@ -505,7 +505,7 @@ const AgentEditSubmission: React.FC = () => {
                             }))
                         }
                         placeholder="Pilih Provinsi"
-                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full border border-gray-300 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                     />
                     {errors.province_id && (
                         <p className="text-red-500 text-sm">{errors.province_id}</p>
@@ -532,7 +532,7 @@ const AgentEditSubmission: React.FC = () => {
                             }))
                         }
                         placeholder="Pilih..."
-                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full border border-gray-300 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                     />
                     {errors.regency_id && (
                         <p className="text-red-500 text-sm">{errors.regency_id}</p>
@@ -558,7 +558,7 @@ const AgentEditSubmission: React.FC = () => {
                             }))
                         }
                         placeholder="Pilih..."
-                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full border border-gray-300 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                     />
                     {errors.district_id && (
                         <p className="text-red-500 text-sm">{errors.district_id}</p>
@@ -584,7 +584,7 @@ const AgentEditSubmission: React.FC = () => {
                             }))
                         }
                         placeholder="Pilih..."
-                        className="w-full border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full border border-gray-300 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                     />
                     {errors.village_id && (
                         <p className="text-red-500 text-sm">{errors.village_id}</p>
@@ -599,7 +599,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.meta.address}
                         onChange={handleInputChange}
                         type="text"
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.address && (
                         <p className="text-red-500 text-sm">{errors.address}</p>
@@ -614,7 +614,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.meta.phone}
                         onChange={handleInputChange}
                         type="text"
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.phone && (
                         <p className="text-red-500 text-sm">{errors.phone}</p>
@@ -629,7 +629,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.meta.email}
                         onChange={handleInputChange}
                         type="text"
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.email && (
                         <p className="text-red-500 text-sm">{errors.email}</p>
@@ -644,7 +644,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.meta.pic_name}
                         onChange={handleInputChange}
                         type="text"
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.pic_name && (
                         <p className="text-red-500 text-sm">{errors.pic_name}</p>
@@ -659,7 +659,7 @@ const AgentEditSubmission: React.FC = () => {
                         type="text"
                         value={formData.meta.pic_phone}
                         onChange={handleInputChange}
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.pic_phone && (
                         <p className="text-red-500 text-sm">{errors.pic_phone}</p>
@@ -674,7 +674,7 @@ const AgentEditSubmission: React.FC = () => {
                         value={formData.meta.pic_email}
                         onChange={handleInputChange}
                         type="text"
-                        className="mt-1 block w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                     />
                     {errors.pic_email && (
                         <p className="text-red-500 text-sm mt-1">{errors.pic_email}</p>
@@ -687,7 +687,7 @@ const AgentEditSubmission: React.FC = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="bg-black text-white py-2 px-4 rounded hover:bg-gray-500"
+                        className="bg-[#1874A5] text-white py-2 px-4 rounded hover:bg-gray-500"
                     >
                         {isLoading ? "Menyimpan..." : "Tambahkan"}
                     </button>

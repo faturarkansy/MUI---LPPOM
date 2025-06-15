@@ -118,7 +118,7 @@ const AgentAddActivity = () => {
                         name="submission_id"
                         value={formData.submission_id}
                         readOnly
-                        className="w-full border p-2 bg-gray-200 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                         required
                     />
                 </div>
@@ -131,7 +131,7 @@ const AgentAddActivity = () => {
                             setFormData({ ...formData, date: date ? date.toISOString().split('T')[0] : '' });
                         }}
                         dateFormat="dd-MM-yyyy"
-                        className="w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                         placeholderText="Select Date"
                         wrapperClassName="w-full"
                     />
@@ -149,7 +149,7 @@ const AgentAddActivity = () => {
                                 status: option?.value || "",
                             }))
                         }
-                        className="border border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="border border-gray-300 rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
                         required
 
                     />
@@ -165,7 +165,7 @@ const AgentAddActivity = () => {
                         name="activity"
                         value={formData.activity}
                         onChange={handleChange}
-                        className="w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                         required
                     />
                 </div>
@@ -176,7 +176,7 @@ const AgentAddActivity = () => {
                         name="response"
                         value={formData.response}
                         onChange={handleChange}
-                        className="w-full border p-2 border-black rounded focus:border-[#1975a6] focus:border-2 focus:outline-none"
+                        className="w-full text-sm border border-gray-300 rounded-md px-3 py-2.5 bg-gray-100"
                         rows={3}
                         required
                     ></textarea>
@@ -186,9 +186,9 @@ const AgentAddActivity = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-black border-2 border-black text-white text-xs sm:text-sm font-bold sm:py-2 py-1.5 sm:px-3 px-2 rounded-md shadow hover:bg-gray-400 hover:text-black"
+                        className="bg-[#1874A5] text-white py-2 px-4 rounded hover:bg-gray-500"
                     >
-                        {loading ? "Submitting..." : "Add Activity"}
+                        {loading ? "Submitting..." : "Tambah Activity"}
                     </button>
                 </div>
             </form>

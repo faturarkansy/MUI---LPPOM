@@ -26,6 +26,37 @@ body {
   z-index: 999999;
 }
 
+.bg-custom-body {
+  position: relative;
+  overflow: hidden; /* agar blur tidak keluar area */
+}
+
+.bg-custom-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('../images/grid-image/background-body.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  pointer-events: none;
+  transform: scale(1.05);
+}
+
+.bg-custom-body > * {
+  position: relative;
+  z-index: 1;
+}
+
+.bg-custom-side-right {
+  background-image: url('../images/grid-image/background-side.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: right;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

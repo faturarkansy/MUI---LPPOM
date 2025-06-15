@@ -40,17 +40,18 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-1">
-      {/* Header */}
-      <div className="w-full h-20 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-end justify-start px-6 py-3 mb-2 rounded-2xl text-white">
-        <h1 className="font-normal text-3xl">{pageTitle}</h1>
+      <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-100 w-full mb-2">
+        <div className="p-3">
+          <h1 className="text-2xl font-bold">{pageTitle}</h1>
+        </div>
       </div>
-      {/* Breadcrumb in gradient bar */}
-      <div className="w-full h-8 bg-gradient-to-r from-[#1975a6] to-[#87d1f8] flex items-center justify-start px-6 py-3 rounded-3xl text-white">
+
+      <div className="w-full h-8 bg-white flex items-center justify-start px-6 py-3 rounded-md text-dark shadow-sm">
         <ol className="flex items-center font-medium whitespace-nowrap">
           {breadcrumbItems.map((item, index) => (
             <li key={index} className="inline-flex items-center text-sm">
               {index > 0 && (
-                <span className="mx-0.5 flex items-center">
+                <span className="mx-2 flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"

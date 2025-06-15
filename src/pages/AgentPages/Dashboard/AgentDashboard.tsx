@@ -87,7 +87,7 @@ const AgentDashboard = () => {
         labels: {
           style: {
             fontSize: fontSize,
-            colors: "#4B5563",
+            colors: "#1874A5",
           },
         },
       },
@@ -105,7 +105,7 @@ const AgentDashboard = () => {
       dataLabels: {
         enabled: true,
       },
-      colors: ["#4F46E5"],
+      colors: ["#1874A5"],
       legend: {
         show: false,
       },
@@ -134,82 +134,97 @@ const AgentDashboard = () => {
   return (
     <div>
       <PageBreadcrumb pageTitle="Dashboard" />
+
       <div className="space-y-3 min-h-screen">
-        {/* <div className="flex items-center mt-3 ">
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date | null) => setStartDate(date)}
-            dateFormat="dd-MM-yyyy"
-            className="border-black border-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-[95px]"
-            placeholderText="Start Date"
-            popperContainer={({ children }) => <div>{children}</div>}
-          />
-          <span className="text-gray-600 mx-2">-</span>
-          <DatePicker
-            selected={endDate}
-            onChange={(date: Date | null) => setEndDate(date)}
-            dateFormat="dd-MM-yyyy"
-            className="border-black border-2 mr-2 sm:py-2 py-1.5 sm:px-3 px-2 font-bold text-xs sm:text-sm rounded-lg w-[95px]"
-            placeholderText="End Date"
-            popperContainer={({ children }) => <div>{children}</div>}
-          />
-          <button
-            onClick={fetchSummaryData}
-            className="bg-black text-white sm:py-2 py-1.5 sm:px-3 px-2 ml-1 text-xs sm:text-sm border-black border-2 rounded-lg w-fit hover:bg-gray-400 hover:text-black"
-          >
-            Filter
-          </button>
-        </div> */}
+        <div className="grid mt-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-3">
 
-        {/* Cards */}
-        <div className="grid grid-cols-2 gap-3 mt-3">
-          {/* Total Pelaku Usaha */}
-          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
-            <div className="p-3 bg-yellow-100 text-yellow-600 rounded-lg">
-              <IconUsersGroup size={24} />
-            </div>
-            <div className="ml-4">
-              <h2 className="text-xl font-semibold">{summary?.company.total ?? 0}</h2>
-              <p className="text-gray-600 text-xs">Pelaku Usaha</p>
+          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center mx-3">
+                <div className="mr-3">
+                  <div className="flex items-center justify-center w-12 h-12 sm:w-11 sm:h-11 rounded-xl bg-white text-[#670075] shadow">
+                    <IconUsersGroup size={24} />
+                  </div>
+                </div>
+
+                <div className='mx-2'>
+                  <div className="text-2xl font-bold">
+                    {summary?.company.total ?? 0}
+                  </div>
+                  <div className="text-sm sm:text-xs">
+                    PU
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Total Tersertifikasi */}
-          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
-            <div className="p-3 bg-green-100 text-green-600 rounded-lg">
-              <IconUserCheck size={24} />
-            </div>
-            <div className="ml-4">
-              <h2 className="text-xl font-semibold">{summary?.company.has_certified ?? 0}</h2>
-              <p className="text-gray-600 text-xs">Pelaku Usaha Bersertifikat</p>
+          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center mx-3">
+                <div className="mr-3">
+                  <div className="flex items-center justify-center w-12 h-12 sm:w-11 sm:h-11 rounded-xl bg-white text-[#670075] shadow">
+                    <IconUserCheck size={24} />
+                  </div>
+                </div>
+
+                <div className='mx-2'>
+                  <div className="text-2xl font-bold">
+                    {summary?.company.has_certified ?? 0}
+                  </div>
+                  <div className="text-sm sm:text-xs">
+                    Bersertifikat
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Total Submission */}
-          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
-            <div className="p-3 bg-blue-100 text-blue-600 rounded-lg">
-              <IconUsersGroup size={24} />
-            </div>
-            <div className="ml-4">
-              <h2 className="text-xl font-semibold">{summary?.submission.total ?? 0}</h2>
-              <p className="text-gray-600 text-xs">Submission</p>
+          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center mx-3">
+                <div className="mr-3">
+                  <div className="flex items-center justify-center w-12 h-12 sm:w-11 sm:h-11 rounded-xl bg-white text-[#670075] shadow">
+                    <IconUsersGroup size={24} />
+                  </div>
+                </div>
+
+                <div className='mx-2'>
+                  <div className="text-2xl font-bold">
+                    {summary?.submission.total ?? 0}
+                  </div>
+                  <div className="text-sm sm:text-xs">
+                    Submission
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Submission Complete */}
-          <div className="flex items-start p-4 bg-white rounded-xl border border-gray-400">
-            <div className="p-3 bg-green-100 text-green-600 rounded-lg">
-              <IconUserCheck size={24} />
-            </div>
-            <div className="ml-4">
-              <h2 className="text-xl font-semibold">{summary?.submission.status?.Complete ?? 0}</h2>
-              <p className="text-gray-600 text-xs">Submission Success</p>
+          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center mx-3">
+                <div className="mr-3">
+                  <div className="flex items-center justify-center w-12 h-12 sm:w-11 sm:h-11 rounded-xl bg-white text-[#670075] shadow">
+                    <IconUserCheck size={24} />
+                  </div>
+                </div>
+
+                <div className='mx-2'>
+                  <div className="text-2xl font-bold">
+                    {summary?.submission.status?.Complete ?? 0}
+                  </div>
+                  <div className="text-sm sm:text-xs">
+                    Success
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Chart - Submissions */}
-        <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
+        <div className="bg-white px-4 py-2 rounded-lg border">
           <h3 className="text-lg font-semibold text-gray-800">Status Submissions</h3>
           <div className="overflow-x-scroll">
             <div className="min-w-[600px]">
@@ -231,7 +246,7 @@ const AgentDashboard = () => {
         </div>
 
         {/* Chart - Activities */}
-        <div className="bg-white px-4 py-2 rounded-xl border border-gray-400">
+        <div className="bg-white px-4 py-2 rounded-lg border">
           <h3 className="text-lg font-semibold text-gray-800">Status Activities</h3>
           <div className="overflow-x-scroll">
             <div className="min-w-[600px]">

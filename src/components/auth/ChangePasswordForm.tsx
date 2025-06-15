@@ -134,62 +134,63 @@ export default function ChangePasswordForm() {
 
     return (
         <div className="w-full max-w-md p-6 md:p-10 space-y-4">
-            <h2 className="md:text-4xl text-3xl font-bold text-[#1975a6] text-left">Change Password</h2>
-            <p className="sm:text-lg text-sm font-bold text-gray-400 text-left">We recommend you to change your password</p>
+            <h1 className="text-3xl font-bold text-[#670075] mb-2">Change Password</h1>
+            <p className="text-gray-600 mb-8">We recommend you to change your password.</p>
 
-            <form className="space-y-6" onSubmit={onSubmit}>
+            <form className="space-y-8" onSubmit={onSubmit}>
                 {/* Password Baru */}
                 <div className="relative">
                     <input
                         id="new_password"
                         ref={passwordRef}
                         type={showPassword ? "text" : "password"}
-                        className="w-full border border-black px-3 py-2"
-                        placeholder="Password Baru"
+                        className="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                        placeholder="Password baru"
                         required
                     />
                     <button
                         type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm focus:outline-none"
+                        tabIndex={-1}
                     >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        {showPassword ? "hide" : "show"}
                     </button>
                 </div>
 
-                {/* Konfirmasi Password Baru */}
                 <div className="relative">
                     <input
                         id="confirm_password"
                         ref={confirmPasswordRef}
                         type={showConfirmPassword ? "text" : "password"}
-                        className="w-full border border-black px-3 py-2"
-                        placeholder="Konfirmasi Password Baru"
+                        className="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                        placeholder="Konfirmasi Password baru"
                         required
                     />
                     <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        onClick={() => setShowPassword((v) => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm focus:outline-none"
+                        tabIndex={-1}
                     >
-                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                        {showConfirmPassword ? "hide" : "show"}
                     </button>
                 </div>
 
                 <div className="space-y-1.5">
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 font-semibold rounded-md"
+                        className="inline-flex mt-12 w-full items-center justify-center px-4 py-2 text-md font-medium text-white transition rounded-md bg-[#7EC34B] shadow-theme-xs"
                     >
                         Change Password
                     </button>
 
-                    <p className="text-lg font-bold text-gray-400 text-center">or</p>
+                    <p className="text-lg font-thin text-gray-400 text-center">or</p>
 
                     <button
                         type="button"
-                        className="w-full bg-black text-white py-2 font-semibold rounded-md"
                         onClick={handleSkip}
+                        className="inline-flex w-full items-center justify-center px-4 py-2 text-md font-medium text-white transition rounded-md bg-[#7EC34B] shadow-theme-xs"
                     >
                         Skip
                     </button>

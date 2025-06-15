@@ -40,63 +40,38 @@ const AgentSubmission = () => {
     <div>
       <PageBreadcrumb pageTitle="Submissions" />
 
-      <div className="flex justify-between items-center mb-0 sm:mb-3">
-        <div className="flex items-center gap-3">
-          {/* Search Field */}
-          <form onSubmit={handleSearchSubmit} className="mt-3 flex items-center">
-            <label htmlFor="default-search" className="sr-only">Search</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg className="hidden sm:inline w-4 h-4 text-black" fill="none" viewBox="0 0 20 20">
-                  <path stroke="currentColor" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                </svg>
-              </div>
+      <div className="mt-4 flex justify-end lg:justify-between items-center">
+        <div className="flex flex-col rounded-lg w-full overflow-x-auto dark:bg-gray-800 items-end">
+          <div className="flex flex-col w-full gap-2 lg:flex-row lg:items-center justify-end">
+            <form onSubmit={handleSearchSubmit} className="w-full lg:w-sm">
               <input
                 type="search"
                 id="default-search"
-                className="block w-40 sm:w-48 md:w-64 sm:ps-10 ps-2 text-xs sm:text-sm text-black font-bold border-2 border-black rounded-l-md sm:rounded-l-lg bg-transparent sm:py-2 py-1.5 sm:px-3 px-2 focus:outline-none"
+                className="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                 placeholder="Search..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
               />
-            </div>
-            <button type="submit" className="sm:py-2 py-1.5 sm:px-3 px-2 bg-black text-white text-xs sm:text-sm font-bold border-t-2 border-r-2 border-b-2 border-black rounded-r-md sm:rounded-r-lg hover:bg-gray-400 hover:text-black">
-              {/* Teks hanya muncul di layar besar */}
-              <span className="hidden sm:inline text-sm font-bold ">Search</span>
+            </form>
 
-              {/* Icon hanya muncul di layar kecil */}
-              <svg
-                className="sm:hidden w-4 h-4 text-white hover:text-white"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
+            <button
+              type="button"
+              onClick={() => setIsFilterModalOpen(true)}
+              className="lg:block px-6 p-2 border rounded-lg text-white bg-[#1874A5] hover:bg-[#20516b] ml-0 lg:ml-2"
+            >
+              Filter
             </button>
-          </form>
 
-          <button
-            className="mt-3 sm:py-2 py-1.5 sm:px-3 px-2 bg-black text-white text-xs sm:text-sm font-bold border-2 border-black rounded-md sm:rounded-lg hover:bg-gray-400 hover:text-black"
-            onClick={() => setIsFilterModalOpen(true)}>
-            Filter
-          </button>
+            <button
+              type="button"
+              onClick={() => navigate("/submission/add-submission")}
+              className="lg:block px-6 p-2 border rounded-lg text-white bg-[#1874A5] hover:bg-[#20516b] ml-0 lg:ml-2"
+            >
+              Tambah submission
+            </button>
+          </div>
         </div>
-
-        <button
-          onClick={() => navigate("/submission/add-submission")}
-          className="mt-3 sm:py-2 py-1.5 sm:px-3 px-2 inline-flex items-center gap-x-2 text-xs sm:text-sm font-bold border-2 border-[#7EC34B] rounded-lg bg-white text-[#7EC34B] hover:bg-gray-200"
-        >
-          <img src={AddIcon} alt="Add Icon" className="w-3 sm:w-4 h-3 sm:h-4" />
-          Add New
-        </button>
       </div>
-
-
-
 
       <CardAgentSubmission
         searchQuery={searchQuery}
