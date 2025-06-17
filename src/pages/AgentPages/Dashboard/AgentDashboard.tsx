@@ -138,7 +138,7 @@ const AgentDashboard = () => {
       <div className="space-y-3 min-h-screen">
         <div className="grid mt-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-3">
 
-          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
+          <div className="flex flex-col justify-between rounded-lg p-2 h-20 shadow-sm bg-white text-gray-500">
             <div className="flex items-center justify-between">
               <div className="flex items-center mx-3">
                 <div className="mr-3">
@@ -152,14 +152,14 @@ const AgentDashboard = () => {
                     {summary?.company.total ?? 0}
                   </div>
                   <div className="text-sm sm:text-xs">
-                    PU
+                    PU : Total
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
+          <div className="flex flex-col justify-between rounded-lg p-2 h-20 shadow-sm bg-white text-gray-500">
             <div className="flex items-center justify-between">
               <div className="flex items-center mx-3">
                 <div className="mr-3">
@@ -173,16 +173,16 @@ const AgentDashboard = () => {
                     {summary?.company.has_certified ?? 0}
                   </div>
                   <div className="text-sm sm:text-xs">
-                    Bersertifikat
+                    PU : Successfully
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center mx-3">
+          <div className="flex flex-col justify-between rounded-lg p-2 h-20 shadow-sm bg-white text-gray-500">
+            <div className="flex justify-between">
+              <div className="flex mx-3">
                 <div className="mr-3">
                   <div className="flex items-center justify-center w-12 h-12 sm:w-11 sm:h-11 rounded-xl bg-white text-[#670075] shadow">
                     <IconUsersGroup size={24} />
@@ -194,16 +194,16 @@ const AgentDashboard = () => {
                     {summary?.submission.total ?? 0}
                   </div>
                   <div className="text-sm sm:text-xs">
-                    Submission
+                    Submission : Total
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-lg p-2 h-18 shadow-sm bg-white text-gray-500">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center mx-3">
+          <div className="flex flex-col justify-between rounded-lg p-2 h-20 shadow-sm bg-white text-gray-500">
+            <div className="flex justify-between">
+              <div className="flex mx-3">
                 <div className="mr-3">
                   <div className="flex items-center justify-center w-12 h-12 sm:w-11 sm:h-11 rounded-xl bg-white text-[#670075] shadow">
                     <IconUserCheck size={24} />
@@ -215,7 +215,7 @@ const AgentDashboard = () => {
                     {summary?.submission.status?.Complete ?? 0}
                   </div>
                   <div className="text-sm sm:text-xs">
-                    Success
+                    Submission : Successfully
                   </div>
                 </div>
               </div>

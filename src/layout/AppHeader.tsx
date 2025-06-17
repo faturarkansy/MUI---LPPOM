@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
-import UserDropdown from "../components/header/UserDropdown";
+// import UserDropdown from "../components/header/UserDropdown";
 import Logo from "../icons/logo_lppom.svg";
 
 const AppHeader: React.FC = () => {
@@ -91,14 +91,13 @@ const AppHeader: React.FC = () => {
             </button>
           </div>
         </div>
-        <div
+        {/* <div
           className="hidden items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none"
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
           </div>
-          {/* <!-- User Area --> */}
           <UserDropdown />
-        </div>
+        </div> */}
       </div>
     </header>
   );

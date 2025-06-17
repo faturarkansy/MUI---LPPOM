@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
-import Profile from "../icons/profile-icon-white.svg";
-import Logo from "../icons/logo_lppom.svg";
 import {
   ChevronRightIcon,
   HorizontaLDots,
@@ -10,6 +8,7 @@ import {
   BuildingIcon,
   BooksIcon,
   ListDetailIcon,
+  MuiIcon,
 } from "../icons";
 
 type NavItem = {
@@ -19,7 +18,6 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-// Define navigation items for different roles
 const roleNavigations: Record<string, NavItem[]> = {
   agent: [
     {
@@ -67,7 +65,7 @@ interface SidebarProps {
 }
 
 const AppSidebar: React.FC<SidebarProps> = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isExpanded, isMobileOpen, isHovered, setIsHovered, setIsMobileOpen } = useSidebar();
   const location = useLocation();
   const userLocalData = localStorage.getItem("USER");
   const userRole = JSON.parse(userLocalData || "{}").role || "guest";
@@ -75,18 +73,17 @@ const AppSidebar: React.FC<SidebarProps> = () => {
   const [openSubmenu, setOpenSubmenu] = useState<{
     index: number;
   } | null>(null);
+
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
     {}
   );
-  const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const isActive = useCallback(
     (path: string) => location.pathname === path,
     [location.pathname]
   );
-
-
 
   useEffect(() => {
     let submenuMatched = false;
@@ -131,39 +128,22 @@ const AppSidebar: React.FC<SidebarProps> = () => {
     });
   };
 
-  const [isMobile, setIsMobile] = useState(false);
-  const [userData, setUserData] = useState<{ name?: string; email?: string }>({});
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("USER") || "{}");
-    setUserData({ name: user.name, email: user.email });
-  }, []);
-
-  const handleSignOut = () => {
-    localStorage.clear();
-    window.location.href = "/signin";
+  const handleMenuClick = () => {
+    if (isMobileOpen) setIsMobileOpen(false);
   };
 
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // Tailwind's 'lg' breakpoint
-    };
-
-    handleResize(); // Cek saat pertama kali
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const renderMenuItems = (items: NavItem[]) => (
-    <ul className="flex flex-col gap-2">
+    <ul className="flex flex-col gap-4">
       {items.map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
             <button
-              onClick={() => handleSubmenuToggle(index)}
+              onClick={() => {
+                handleSubmenuToggle(index)
+                handleMenuClick();
+              }}
               className={`menu-item group ${openSubmenu?.index === index
-                ? "menu-item-active text-[#7EC34B] bg-[#F0F9E8]"
+                ? "menu-item-active text-white bg-[#F0F9E8]"
                 : "menu-item-inactive"
                 } cursor-pointer ${!isExpanded && !isHovered
                   ? "lg:justify-center"
@@ -172,7 +152,7 @@ const AppSidebar: React.FC<SidebarProps> = () => {
             >
               <span
                 className={`menu-item-icon-size  ${openSubmenu?.index === index
-                  ? "menu-item-icon-active text-[#7EC34B]"
+                  ? "menu-item-icon-active text-white"
                   : "menu-item-icon-inactive"
                   }`}
               >
@@ -194,15 +174,16 @@ const AppSidebar: React.FC<SidebarProps> = () => {
             nav.path && (
               <Link
                 to={nav.path}
-                className={`menu-item group ${isActive(nav.path)
-                  ? "menu-item-active text-[#7EC34B] bg-[#F0F9E8]"
-                  : "menu-item-inactive"
+                onClick={handleMenuClick}
+                className={`menu-item text-medium font-medium hover:bg-[#20516b] group ${isActive(nav.path)
+                  ? "menu-item-active text-[#FFFFFF] bg-[#20516b]"
+                  : "menu-item-inactive text-white"
                   }`}
               >
                 <span
                   className={`menu-item-icon-size ${isActive(nav.path)
-                    ? "menu-item-icon-active text-[#7EC34B]"
-                    : "menu-item-icon-inactive"
+                    ? "menu-item-icon-active text-white"
+                    : "menu-item-icon-inactive text-white"
                     }`}
                 >
                   {nav.icon}
@@ -231,8 +212,8 @@ const AppSidebar: React.FC<SidebarProps> = () => {
                   <li key={subItem.name}>
                     <Link
                       to={subItem.path}
-                      className={`menu-dropdown-item ${isActive(subItem.path)
-                        ? "menu-dropdown-item-active text-[#7EC34B] bg-[#F0F9E8]"
+                      className={`menu-dropdown-item text-medium font-medium hover:bg-[#20516b] ${isActive(subItem.path)
+                        ? "menu-dropdown-item-active text-[#20516b] bg-[#F0F9E8]"
                         : "menu-dropdown-item-inactive"
                         }`}
                     >
@@ -272,64 +253,46 @@ const AppSidebar: React.FC<SidebarProps> = () => {
 
   return (
     <aside
-      className={`fixed mt-15 flex flex-col lg:mt-0 top-0  bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-gray-200
-      ${isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"}
-      ${isMobile ? `${isMobileOpen ? "right-0" : "-right-full"} border-l` : "left-0 border-r"}
-      ${isMobile ? "" : "md:left-0 lg:translate-x-0"}
-    `}
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-[#1874A5] text-gray-900 h-screen transition-all duration-300 ease-in-out z-50
+        ${isExpanded || isMobileOpen
+          ? "w-[290px]"
+          : isHovered
+            ? "w-[290px]"
+            : "w-[90px]"
+        }
+        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
 
-      {/* Info Agen di Mobile */}
-      {isMobile && isMobileOpen && (
-        <div className="flex flex-row items-center py-4 px-6 bg-gradient-to-r from-[#d1e9bf] to-[#87c75a] text-white shadow">
-
-          <img
-            src={Profile}
-            alt="Profile"
-            className="w-8 h-8 rounded-full mr-3"
-          />
-          <div className="flex flex-col">
-            <p className="text-xl font-bold">{userData?.name || "Profile tidak ditemukan"}</p>
-            <p className="text-xs font-semibold">{userData?.email || "Email tidak ditemukan"}</p>
-          </div>
-
-
-        </div>
-      )}
-
-
-      {/* Logo */}
       <div
         className={`hidden lg:block py-8 ${!isExpanded && !isHovered
           ? "lg:flex justify-center"
           : "flex justify-start"
           }`}
       >
-        <h4 className="w-full flex justify-evenly font-bold text-gray-800 text-title-sm ml-6">
-          <Link to="/" className="flex w-full">
-            <img
-              src={Logo}
-              alt="Logo"
-              className="h-12"
-            />
-          </Link>
-          {/* Tampilkan teks hanya pada layar kecil */}
-          <span className="lg:hidden">
-            {isExpanded || isMobileOpen || isHovered ? "LPPOM MUI" : null}
+        <h4 className="w-full flex justify-evenly items-center mt-2 font-bold text-gray-800 text-title-sm">
+          <span className="inline-flex items-center justify-center rounded-full border-2 border-white bg-white/20">
+            <MuiIcon className="size-12" />
           </span>
+
+          {isExpanded || isMobileOpen || isHovered ? (
+            <div className="mx-4">
+              <h3 className="text-xl font-extrabold text-white">LPPOM MUI</h3>
+              <p className="text-white text-xs font-thin">Leading in Halal Assurance Solutions</p>
+            </div>
+
+          ) : null}
         </h4>
       </div>
-
-
-      {/* Menu */}
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar px-6">
-        <nav className="mb-6 lg:mt-0 mt-4">
+      {/* ) : null} */}
+      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+        <nav className="mb-6">
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-2 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
+                className={`mb-4 mt-4 text-sm font-extrabold uppercase flex leading-[20px] text-white ${!isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "justify-start"
                   }`}
@@ -344,20 +307,7 @@ const AppSidebar: React.FC<SidebarProps> = () => {
             </div>
           </div>
         </nav>
-        {isMobile && isMobileOpen && (
-          <div className="pb-6 mt-auto">
-            <button
-              onClick={handleSignOut}
-              className="w-full py-2 bg-black text-white rounded-md font-semibold text-sm hover:bg-gray-800 transition"
-            >
-              Logout
-            </button>
-          </div>
-        )}
-
       </div>
-
-
     </aside>
   );
 };

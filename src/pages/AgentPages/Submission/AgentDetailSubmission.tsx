@@ -93,7 +93,6 @@ const AgentDetailSubmission = () => {
         { label: "NIB", value: item.company?.nib },
         { label: "Status", value: item.status?.status || "-" },
         { label: "Skala Bisnis", value: item.company?.business_scale?.name || "-" },
-        { label: "Lokasi", value: "" },
         {
             label: "Provinsi", value: item.company?.province?.name
                 ? toTitleCase(item.company?.province?.name)
@@ -154,7 +153,7 @@ const AgentDetailSubmission = () => {
                         Submission Details
                     </h3>
 
-                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">  
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                         <button
                             type="button"
                             onClick={() => {
@@ -190,7 +189,7 @@ const AgentDetailSubmission = () => {
 
                                     <div className="col-span-2">
                                         {field.label === "Jenis Produk" ? (
-                                            <div className="border border-gray-200 rounded-md px-2 py-1 bg-gray-50 text-gray-800 max-h-28 overflow-y-auto text-sm">
+                                            <div className="border px-1 py-0 rounded w-[250px] h-[60px] overflow-auto bg-gray-50">
                                                 {field.value}
                                             </div>
                                         ) : (

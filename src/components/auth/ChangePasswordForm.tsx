@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+// import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axiosClient from "../../axios-client.js";
 import Notification from "../common/Notification.js";
 import { useNavigate } from "react-router-dom";
@@ -169,7 +169,7 @@ export default function ChangePasswordForm() {
                     />
                     <button
                         type="button"
-                        onClick={() => setShowPassword((v) => !v)}
+                        onClick={() => setShowConfirmPassword((v) => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm focus:outline-none"
                         tabIndex={-1}
                     >

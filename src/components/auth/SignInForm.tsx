@@ -1,6 +1,6 @@
 import { useState, createRef } from "react";
 import { isMobile } from "react-device-detect";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+// import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useStateContext } from "../../context/ContextProvider.js";
 import axiosClient from "../../axios-client.js";
 import Notification from "../../components/common/Notification";

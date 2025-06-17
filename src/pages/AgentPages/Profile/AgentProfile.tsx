@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Profile from "../../../icons/profile-icon-white.svg";
 import { Link } from "react-router";
 import axiosClient from "../../../axios-client"; // pastikan path ini sesuai
-import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
+// import PageBreadcrumb from "../../../components/common/PageBreadCrumb";
 
 interface UserData {
     name?: string;
@@ -95,7 +95,7 @@ const AgentProfile: React.FC = () => {
                     onClick={signOutHandler}
                     className="inline-flex mt-12 w-full items-center justify-center px-4 py-2 text-md font-medium text-white transition rounded-md bg-[#1874A5] shadow-theme-xs"
                 >
-                    Logout
+                    Sign Out
                 </button>
             </div>
         </div>
